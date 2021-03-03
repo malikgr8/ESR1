@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from rest_framework.compat import MaxValueValidator, MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from project.feed.models import Restaurant
 

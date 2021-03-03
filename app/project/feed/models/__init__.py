@@ -4,3 +4,4 @@ from .review import Review
 from .user_profile import Profile
 from .comment import Comment
 from .likes import ReviewLike, CommentLike
+from .offer import Offer
