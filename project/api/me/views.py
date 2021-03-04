@@ -5,6 +5,13 @@ from rest_framework.response import Response
 
 from project.api.me.serializers import UserSerializer, UserProfileUpdateSerializer
 from project.api.permissions import IsUserOrReadOnly
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.contrib import auth
+from django.contrib.auth.models import User
+
+from project.feed.models.coupon import Coupon
+from project.feed.models.user_coupon import UserCoupon
 
 User = get_user_model()
 
@@ -33,3 +40,28 @@ class GetUpdateUserProfileView(GenericAPIView):
         user.is_active = False
         user.save()
         return Response('OK')
+
+#####################################################
+
+@api_view(['POST'])
+def use_Coupon(request):
+    data = {
+        'status': 0
+    }
+    try:
+        code = request.data['code']
+        user_id = request.data['user_id']
+
+        if Coupon.objects.filter(code=code, active=True).exists():
+            coupon = Coupon.objects.get(code=code)
+            user = User.objects.get(id=user_id)
+            UserCoupon.objects.create(user=user, coupon=coupon)
+            data['status'] = 1
+            pass
+
+    except Exception as e:
+        print(e)
+        pass
+
+    return Response(data=data)
+
