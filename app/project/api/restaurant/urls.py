@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.urls import path
 
 from project.api.restaurant.views import ListAllRestaurantsView, NewRestaurantView, RestaurantGetUpdateDeleteView, \
-    ListCategoryRestaurantsView, UserRestaurantsView, RestaurantImageUploadView, OfferByRestaurant
+    ListCategoryRestaurantsView, UserRestaurantsView, RestaurantImageUploadView, OfferByRestaurant, AllOffers
 
 from project.api.restaurant import views
 
@@ -16,6 +16,6 @@ urlpatterns = [
     path('user/<int:pk>/', UserRestaurantsView.as_view(), name='user_restaurants'),
     path('category/<int:pk>/', ListCategoryRestaurantsView.as_view(), name='category_restaurants'),
     path('<int:pk>/', RestaurantGetUpdateDeleteView.as_view(), name='get_update_delete_restaurant'),
-    path('offer/<int:pk>/', OfferByRestaurant.as_view(), name='bumperactivity'),
-    path('coupon', views.coupon_apply, name='apply'),
+    path('<int:restaurant_id>/offer', OfferByRestaurant.as_view(), name='offer_by_restaurant'),
+    path('offers', AllOffers.as_view(), name='all_offers'),
 ]

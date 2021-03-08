@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'project.feed',
     'project.api',
     'corsheaders',
-    #'django_simple_coupons',
+    # 'django_simple_coupons',
     'timezone_field',
     # 'firebase_authentication',
 ]
@@ -105,8 +105,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
+        'NAME': 'esr',
+        'USER': 'ESR',
         'PASSWORD': '2804malik',
         'HOST': '127.0.0.1',
         'PORT': '5432',
@@ -191,6 +191,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/media-files'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data/') # 'data' is my media folder
+
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

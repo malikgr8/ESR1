@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from project.feed.models import Profile
+from project.feed.models.coupon import Coupon
 
 User = get_user_model()
 
