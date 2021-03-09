@@ -1,3 +1,4 @@
+#from urllib import request
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import redirect
@@ -7,7 +8,6 @@ from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from project.api.base import GetObjectMixin
 from project.api.categories.serializers import CategorySerializer
 from project.api.permissions import IsUserOrReadOnly
@@ -15,7 +15,10 @@ from project.api.restaurant.serializers import RestaurantSerializer, RestaurantI
 from project.feed.models import Restaurant, Category, Offer
 from project.feed.models.coupon import Coupon
 from project.feed.models.forms import CouponApplyForm
+from project.feed.models.offer import Offer
 import time as _time
+
+#from urllib3.util import request
 
 
 class ListAllRestaurantsView(ListAPIView):
@@ -101,13 +104,24 @@ class UserRestaurantsView(ListAPIView):
         return Restaurant.objects.filter(user__username=self.request.user.username).order_by('created')
 
 
-class OfferByRestaurant(GenericAPIView):
-
+class AllOffers(ListAPIView):
     serializer_class = OfferSerializer
+
+    def get_queryset(self):
+        return Offer.objects.filter(approval_status=True)
+
+
+
+class OfferByRestaurant(GenericAPIView):
+    #id = Offer.objects.get(OfferSerializer)
     queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+    #queryset = Offer.objects.all()
 
     def get(self, request, **kwargs):
-        return self.queryset.filter(offer__restaurant_id=kwargs.get('restaurant_id'))
+        offer = self.queryset.filter(restaurant_id=kwargs.get('restaurant_id'), approval_status=True)
+        serializer = self.get_serializer(offer, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, **kwargs):
         """

@@ -7,6 +7,7 @@ from project.feed.models import Offer
 from .models import coupon
 from .models.coupon import Coupon
 from .models.user_coupon import UserCoupon
+#from project.feed.models import offer
 
 
 class RestaurantAdmin(admin.ModelAdmin):
@@ -39,9 +40,9 @@ class CommentLikeAdmin(admin.ModelAdmin):
 
 
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['name', 'discounted_price',
-                    'orignal_price', 'restaurant',
-                    'image_url', 'valid_till',
+   list_display = ['name', 'discounted_price',
+                   'original_price', 'restaurant',
+                   'image_url', 'valid_till',
                     'valid_from']
 
 

@@ -11,13 +11,11 @@ class UserCoupon(models.Model):
     coupon = models.ForeignKey(
         Coupon,
         on_delete=models.SET_NULL,
-        related_name='offers',
         null=True,)
 
     user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        related_name='offers',
         null=True,)
 
     used_at = models.DateTimeField(auto_now_add=True)

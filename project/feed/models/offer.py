@@ -11,7 +11,7 @@ from .restaurant import Restaurant
 class Offer(models.Model):
 
     name = models.CharField(
-        verbose_name='offer_name',
+        #verbose_name='offer_name',
         max_length=256
     )
     discounted_price = models.FloatField(
@@ -19,13 +19,13 @@ class Offer(models.Model):
         null=True,
         default=0.0
     )
-    orignal_price = models.FloatField(
+    original_price = models.FloatField(
         default=0.0
     )
     restaurant = models.ForeignKey(
         Restaurant,
         on_delete=models.SET_NULL,
-        related_name='offers',
+        #related_name='offers',
         null=True,
     )
 
@@ -46,5 +46,5 @@ class Offer(models.Model):
     created_at = models.DateTimeField(default=datetime.now())
     updated_at = models.DateTimeField(default=datetime.now())
 
-    def __str__ (self):
+    def __str__(self):
         return self.name

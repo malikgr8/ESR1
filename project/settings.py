@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'project.feed',
     'project.api',
     'corsheaders',
-    #'django_simple_coupons',
+    # 'django_simple_coupons',
     'timezone_field',
     # 'firebase_authentication',
 ]
@@ -191,6 +191,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/media-files'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data/') # 'data' is my media folder
+
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
