@@ -16,7 +16,7 @@ class RestaurantAdmin(admin.ModelAdmin):
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['user', 'restaurant', 'content', 'rating']
+    list_display = ['user', 'restaurant', 'offer', 'comment', 'rating']
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -65,7 +65,7 @@ class UserCouponAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Restaurant, RestaurantAdmin)
-admin.site.register(Review, ReviewAdmin)
+# admin.site.register(Review, ReviewAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -74,3 +74,4 @@ admin.site.register(CommentLike, CommentLikeAdmin)
 admin.site.register(Offer, OfferAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(UserCoupon, UserCouponAdmin)
+admin.site.register(Review)

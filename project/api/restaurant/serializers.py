@@ -1,11 +1,10 @@
 from rest_framework import serializers
-
-from project.api.reviews.serializers import ReviewSerializer
 from project.feed.models import Restaurant, Offer
-from project.feed.models.offer import Offer
-
+from project.api.reviews.serializers import ReviewSerializer
 
 class RestaurantSerializer(serializers.ModelSerializer):
+
+
     reviews = ReviewSerializer(read_only=True, many=True)
 
     class Meta:
@@ -29,12 +28,14 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
 
 class RestaurantImageUploadSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Restaurant
         fields = ['image']
 
 
 class OfferSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Offer
         fields = ['id', 'name', 'discounted_price',

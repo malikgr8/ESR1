@@ -9,8 +9,53 @@ from rest_framework.views import APIView
 from project.api.base import GetObjectMixin
 from project.api.permissions import IsUserOrReadOnly
 from project.api.reviews.serializers import ReviewSerializer
-from project.feed.models import Restaurant, Review, ReviewLike
+from project.feed.models import Restaurant, Review, ReviewLike, Offer
 
+
+class GetReviewByRestaurantView(GenericAPIView):
+
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+
+    def get(self, request, **kwargs):
+        restaurant_id = kwargs.get('restaurant_id')
+        review = self.queryset.filter(restaurant=restaurant_id).select_related('restaurant', 'offer', 'user')
+        serializer = self.get_serializer(review, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
+class CreateReview(GenericAPIView):
+
+    serializer_class = ReviewSerializer
+
+    def post(self, request):
+        data = request.data
+        restaurant = Restaurant.objects.get(pk=data.pop('restaurant_id'))
+        offer = Offer.objects.get(pk=data.pop('offer_id'))
+
+        data['restaurant'] = restaurant
+        data['offer'] = offer
+        serializer = self.get_serializer(
+            data=data,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        review = serializer.create(serializer.validated_data)
+        return Response(self.serializer_class(review).data, status.HTTP_201_CREATED)
+
+
+class AddReviewImage(GenericAPIView):
+
+    serializer_class = ReviewSerializer
+
+    def post(self, request):
+        import pdb;pdb.set_trace()
+        review = Review.objects.get(pk=int(request.data.get('review_id')))
+        review.image = request.data.get('image')
+        review.save()
+        return Response(self.serializer_class(review).data, status.HTTP_200_OK)
+        
+        
 
 class NewReviewView(GetObjectMixin, GenericAPIView):
     serializer_class = ReviewSerializer

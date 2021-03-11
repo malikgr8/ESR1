@@ -1,49 +1,53 @@
+from django.utils import timezone
 from django.conf import settings
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from project.feed.models import Restaurant
+from project.feed.models.offer import Offer
 
 
 class Review(models.Model):
 
     user = models.ForeignKey(
-        verbose_name='user',
         to=settings.AUTH_USER_MODEL,
-        related_name='reviews',
         on_delete=models.SET_NULL,
-        null=True,
+        null=True
     )
 
     restaurant = models.ForeignKey(
         Restaurant,
-        related_name='reviews',
+        on_delete=models.CASCADE
+    )
+
+    offer =  models.ForeignKey(
+        Offer,
         on_delete=models.CASCADE,
     )
 
-    content = models.TextField(
-        verbose_name='review_content',
+    comment = models.TextField(
+        null=True,
+        blank=True
     )
 
     rating = models.IntegerField(
-        verbose_name='restaurant_rating',
         validators=[MaxValueValidator(5), MinValueValidator(1)]
     )
 
-    created = models.DateTimeField(
-        verbose_name='date_created',
-        auto_now_add=True,
+    image = models.ImageField(null=True)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
     )
 
-    modified = models.DateTimeField(
-        verbose_name='date_modified',
-        auto_now=True,
+    updated_at = models.DateTimeField(
+        auto_now_add=True
     )
 
     class Meta:
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
-        ordering = ['-modified']
+        ordering = ['-created_at']
         unique_together = [(
-             'user', 'restaurant'
+             'user_id', 'restaurant_id'
         )]

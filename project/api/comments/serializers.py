@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from project.feed.models import Comment
+from project.feed.models.review import Review
 
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -43,8 +43,8 @@ class Offer(models.Model):
     valid_till = models.DateTimeField()
     approval_status = models.BooleanField(default=False)
 
-    created_at = models.DateTimeField(default=datetime.now())
-    updated_at = models.DateTimeField(default=datetime.now())
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

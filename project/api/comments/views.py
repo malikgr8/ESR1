@@ -3,11 +3,25 @@ from django.http import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from project.api.base import GetObjectMixin
 from project.api.comments.serializers import CommentSerializer
 from project.api.reviews.serializers import ReviewSerializer
 from project.feed.models import Review, Comment, CommentLike
+
+
+# class ReviewGetCreateView(GenericAPIView):
+
+#     serializer_class = ReviewSerializer
+#     queryset = Review.objects.all()
+
+#     def get(self, request, **kwargs):
+#         user_id =  kwargs.get('user_id')
+#         restaurant_id = kwargs.get('restaurant_id')
+#         review = self.queryset.filter(user=user_id, restaurant=restaurant_id).select_related('restaurant', 'offer')
+#         serializer = self.get_serializer(review, many=True)
+#         return Response(serializer.data, status.HTTP_200_OK)
 
 
 class CommentReviewView(GetObjectMixin, APIView):
