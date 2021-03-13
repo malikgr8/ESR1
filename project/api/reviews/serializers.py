@@ -11,16 +11,30 @@ class ReviewSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Review
-        fields = ['user', 'restaurant', 'offer', 'comment', 'rating', 'updated_at']
+        fields = [
+            'user', 
+            'restaurant', 
+            'offer', 
+            'comment', 
+            'rating_taste', 
+            'rating_ambiance', 
+            'rating_service', 
+            'rating_overall',
+            'updated_at'
+        ]
 
     def create(self, validated_data):
+        import pdb; pdb.set_trace()
         post_data = self.context.get('request').data
         return Review.objects.create(
             user=self.context.get('request').user,
             restaurant=post_data.get('restaurant'),
             offer=post_data.get('offer'),
             comment=post_data.get('comment'),
-            rating=post_data.get('rating')
+            rating_taste=post_data.get('rating_taste'),
+            rating_ambiance=post_data.get('rating_ambiance'),
+            rating_service=post_data.get('rating_service'),
+            rating_overall=post_data.get('rating_overall')
         )
     
     def get_user(self, review):

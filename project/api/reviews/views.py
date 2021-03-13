@@ -25,7 +25,7 @@ class GetReviewByRestaurantView(GenericAPIView):
 
 
 class CreateReview(GenericAPIView):
-
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
 
     def post(self, request):
@@ -49,7 +49,6 @@ class AddReviewImage(GenericAPIView):
     serializer_class = ReviewSerializer
 
     def post(self, request):
-        import pdb;pdb.set_trace()
         review = Review.objects.get(pk=int(request.data.get('review_id')))
         review.image = request.data.get('image')
         review.save()

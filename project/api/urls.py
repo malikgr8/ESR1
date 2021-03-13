@@ -12,4 +12,6 @@ urlpatterns = [
     path('auth/', include('project.api.auth.urls'), name='auth'),
     path('search/', include('project.api.search.urls'), name='search'),
     path('home/', include('project.api.home.urls'), name='home'),
+    path('user/', include('project.api.auth.urls'), name='user'),
+    
 ]
