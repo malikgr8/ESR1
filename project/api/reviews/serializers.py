@@ -24,7 +24,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        import pdb; pdb.set_trace()
+
         post_data = self.context.get('request').data
         return Review.objects.create(
             user=self.context.get('request').user,
