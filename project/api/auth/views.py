@@ -15,20 +15,27 @@ from rest_framework.views import APIView
 def signup(request):
     regex = r"(03[0-9]{2}[0-9]{7})$"
     mobile_number = request.data.get('mobile_number')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+
     if not re.search(regex, mobile_number):
         raise ValidationError('moblile number is invalid')
     password = request.data.get('password')
     if len(password) < 8:
         raise ValidationError('password length should be greater than 8')
+    if not first_name or not last_name:
+        raise ValidationError('Both First Name and Last Name are required')
     try:
         user = User(
             username=mobile_number,
-            password=make_password(password)
+            password=make_password(password),
+            first_name=first_name,
+            last_name=last_name
         )
         user.save()
         return Response('user successfully registerd')
     except:
-        return Response('user registration faild created')
+        return Response('user registration failed.')
 
 
 @api_view(['POST'])
@@ -56,7 +63,6 @@ class ChangePassowrdView(APIView):
         new_password = request.data.get('new_password')
         if len(new_password) < 8:
             raise ValidationError('password length should be greater than 8')
-        import pdb;pdb.set_trace()
         user = request.user
         user.password = make_password(new_password)
         user.save()

@@ -104,15 +104,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
 
-    comments_count = serializers.SerializerMethodField()
-    reviews_count = serializers.SerializerMethodField()
-
-    def get_comments_count(self, user):
-        return user.comments.count()
-
-    def get_reviews_count(self, user):
-        return user.reviews.count()
-
     username = serializers.CharField(
         required=False,
         allow_blank=False
@@ -132,5 +123,5 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile', 'comments_count', 'reviews_count']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile']
         read_only_fields = ['id', 'profile']

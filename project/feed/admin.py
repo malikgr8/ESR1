@@ -7,7 +7,7 @@ from project.feed.models import Offer
 from .models import coupon
 from .models.coupon import Coupon
 from .models.user_coupon import UserCoupon
-#from project.feed.models import offer
+from project.feed.models.admin_ad import AdminAd
 
 
 class RestaurantAdmin(admin.ModelAdmin):
@@ -75,3 +75,4 @@ admin.site.register(Offer, OfferAdmin)
 admin.site.register(Coupon, CouponAdmin)
 admin.site.register(UserCoupon, UserCouponAdmin)
 admin.site.register(Review)
+admin.site.register(AdminAd)

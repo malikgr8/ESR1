@@ -45,7 +45,7 @@ class CreateReview(GenericAPIView):
 
 
 class AddReviewImage(GenericAPIView):
-
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
 
     def post(self, request):
@@ -83,6 +83,7 @@ class RestaurantReviewsView(GetObjectMixin, ListAPIView):
 
 
 class UserReviewsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
 
     def get_queryset(self):

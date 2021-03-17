@@ -111,6 +111,15 @@ class AllOffers(ListAPIView):
         return Offer.objects.filter(approval_status=True)
 
 
+class OfferByName(GenericAPIView):
+    serializer_class = OfferSerializer
+    queryset = Offer.objects.all()
+
+    def get(self, request, **kwargs):
+        import pdb;pdb.set_trace()
+        offer = self.queryset.filter(name=request.data.get('offer_name'), approval_status=True)
+        serializer = self.get_serializer(offer, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 class OfferByRestaurant(GenericAPIView):
     #id = Offer.objects.get(OfferSerializer)

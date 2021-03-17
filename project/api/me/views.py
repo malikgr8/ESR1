@@ -17,6 +17,23 @@ from datetime import datetime
 User = get_user_model()
 
 
+class GetUserProfileView(GenericAPIView):
+
+    permission_classes = [
+        IsAuthenticated,
+        IsUserOrReadOnly
+    ]
+
+    def get(self, request, **kwargs):
+        user = User.objects.get(pk=request.user.id)
+        return Response(
+            {
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "phone_number": user.username
+            }
+        )
+
 class GetUpdateUserProfileView(GenericAPIView):
     serializer_class = UserSerializer
 

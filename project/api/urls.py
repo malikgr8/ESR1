@@ -13,5 +13,6 @@ urlpatterns = [
     path('search/', include('project.api.search.urls'), name='search'),
     path('home/', include('project.api.home.urls'), name='home'),
     path('user/', include('project.api.auth.urls'), name='user'),
+    path('ad/', include('project.api.admin_ad.urls'), name='admin_ad'),
     
 ]
