@@ -8,8 +8,19 @@ from rest_framework.views import APIView
 
 from project.api.base import GetObjectMixin
 from project.api.permissions import IsUserOrReadOnly
-from project.api.reviews.serializers import ReviewSerializer
+from project.api.reviews.serializers import ReviewSerializer, TagSerializer
 from project.feed.models import Restaurant, Review, ReviewLike, Offer
+from project.feed.models.tag import Tag
+
+
+class SearchTagsView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TagSerializer
+
+    def get(self, request):
+        serializer = self.get_serializer(Tag.objects.filter(name__contains=request.GET.get('tag')), many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
 
 
 class GetReviewByRestaurantView(GenericAPIView):

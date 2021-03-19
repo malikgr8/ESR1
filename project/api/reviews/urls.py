@@ -1,7 +1,10 @@
 from django.urls import path
 
-from project.api.reviews.views import NewReviewView, RestaurantReviewsView, UserReviewsView, ReviewGetUpdateDeleteView, \
-    LikeUnlikeReviewView, LikedReviewsView, CommentedReviewsView, GetReviewByRestaurantView, CreateReview, AddReviewImage
+from project.api.reviews.views import (
+    NewReviewView, RestaurantReviewsView, UserReviewsView, ReviewGetUpdateDeleteView,
+    LikeUnlikeReviewView, LikedReviewsView, CommentedReviewsView, GetReviewByRestaurantView, 
+    CreateReview, AddReviewImage, SearchTagsView
+)
 
 app_name = 'reviews'
 
@@ -9,6 +12,8 @@ urlpatterns = [
     path('restaurant/<int:restaurant_id>', GetReviewByRestaurantView.as_view(), name='get_reviews_by_restaurant'),
     path('post', CreateReview.as_view(), name='create_review'),
     path('post/image', AddReviewImage.as_view(), name='create_review'),
+    path('search/tag', SearchTagsView.as_view(), name='search_tags'),
+    
 
 
 

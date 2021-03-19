@@ -21,18 +21,31 @@ import time as _time
 #from urllib3.util import request
 
 
-class ListAllRestaurantsView(ListAPIView):
-    serializer_class = RestaurantSerializer
-    queryset = Restaurant.objects.all()
+class ListAllRestaurantsView(GenericAPIView):
+    queryset = Offer.objects.all()
+    queryset_restaurant = Restaurant.objects.all()
+    serializer_class = OfferSerializer
+    serializer_class_restaurant = RestaurantSerializer
 
-    def filter_queryset(self, queryset):
+    def get(self, requset):
         search_string = self.request.query_params.get('search')
         if search_string:
-            queryset = queryset.filter(Q(name__icontains=search_string) |
-                                       Q(country__icontains=search_string) |
-                                       Q(street__icontains=search_string) |
-                                       Q(city__icontains=search_string)).order_by('reviews')
-        return queryset
+            context = {}
+            offers = self.queryset.filter(
+                Q(name__icontains=search_string) |
+                Q(restaurant__name__icontains=search_string)
+            )
+            if offers:
+                context['offers'] = self.serializer_class(offers, many=True).data
+            
+            restaurants = self.queryset_restaurant.filter(Q(name__icontains=search_string))
+            if restaurants:
+                context['restaurants']= self.serializer_class_restaurant(restaurants, many=True).data
+            if context:
+                return Response(context)
+            return Response('Nothing Found')
+        return Response(self.serializer_class_restaurant(self.queryset_restaurant, many=True).data)
+        
 
 
 class TopRatedRestaurantsView(GenericAPIView):

@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
 from project.feed.models import Review
+from project.feed.models.tag import Tag
+
+
+class TagSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Tag
+        fields = ['name', ]
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -18,13 +26,23 @@ class ReviewSerializer(serializers.ModelSerializer):
             'comment', 
             'rating_taste', 
             'rating_ambiance', 
-            'rating_service', 
+            'rating_quality', 
+            'rating_money_value', 
             'rating_overall',
-            'updated_at'
+            'updated_at',
+            'image',
+            'tags'
         ]
 
     def create(self, validated_data):
         post_data = self.context.get('request').data
+        rating_list = [
+            post_data.get('rating_taste'),
+            post_data.get('rating_ambiance'),
+            post_data.get('rating_quality'),
+            post_data.get('rating_money_value')
+        ]
+        rating_overall = sum(rating_list) / len(rating_list)
         return Review.objects.create(
             user=self.context.get('request').user,
             restaurant=post_data.get('restaurant'),
@@ -32,8 +50,9 @@ class ReviewSerializer(serializers.ModelSerializer):
             comment=post_data.get('comment'),
             rating_taste=post_data.get('rating_taste'),
             rating_ambiance=post_data.get('rating_ambiance'),
-            rating_service=post_data.get('rating_service'),
-            rating_overall=post_data.get('rating_overall')
+            rating_quality=post_data.get('rating_quality'),
+            rating_money_value=post_data.get('rating_money_value'),
+            rating_overall=rating_overall
         )
     
     def get_user(self, review):

@@ -9,6 +9,7 @@ from .models.coupon import Coupon
 from .models.user_coupon import UserCoupon
 from .models.user_offers import UserOffers
 from project.feed.models.admin_ad import AdminAd
+from project.feed.models.tag import Tag
 
 
 class RestaurantAdmin(admin.ModelAdmin):
@@ -78,3 +79,4 @@ admin.site.register(UserCoupon, UserCouponAdmin)
 admin.site.register(Review)
 admin.site.register(AdminAd)
 admin.site.register(UserOffers)
+admin.site.register(Tag)
