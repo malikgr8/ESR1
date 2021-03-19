@@ -11,8 +11,13 @@ from django.contrib.auth.models import User
 
 from project.feed.models.coupon import Coupon
 from project.feed.models.user_coupon import UserCoupon
+from project.feed.models.user_offers import UserOffers
 from rest_framework import mixins
 from datetime import datetime
+from rest_framework.views import APIView
+from project.api.restaurant.serializers import OfferSerializer
+from project.api.me.serializers import UserCoupnSerializer, UserOfferSerializer
+
 
 User = get_user_model()
 
@@ -62,7 +67,11 @@ class GetUpdateUserProfileView(GenericAPIView):
 
 #####################################################
 class CouponApply(mixins.CreateModelMixin, GenericAPIView):
-
+    permission_classes = [
+            IsAuthenticated,
+            IsUserOrReadOnly
+    ]
+    
     def post(self, request):
         """
         use coupon by promo code given by restaurant
@@ -90,3 +99,24 @@ class CouponApply(mixins.CreateModelMixin, GenericAPIView):
                     'coupon_applied': False
                 }
             )
+
+
+
+class UserCouponsView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        offers = []
+        info = UserCoupon.objects.filter(user=request.user).select_related('coupon')
+        info = UserCoupnSerializer(info).data
+        return Response(info)
+
+class UserFavOffersView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        offers = []
+        info = UserOffers.objects.filter(user=request.user).select_related('offer')
+        info = UserOfferSerializer(info).data
+        return Response(info)
+

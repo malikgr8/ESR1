@@ -1,8 +1,12 @@
 from django.conf.urls import url
 from django.urls import path
 
-from project.api.restaurant.views import ListAllRestaurantsView, NewRestaurantView, RestaurantGetUpdateDeleteView, \
-    ListCategoryRestaurantsView, UserRestaurantsView, RestaurantImageUploadView, OfferByRestaurant, AllOffers, OfferByName
+from project.api.restaurant.views import (
+    ListAllRestaurantsView, NewRestaurantView, RestaurantGetUpdateDeleteView,
+    TopRatedRestaurantsView, TopRated4RestaurantsView,
+    ListCategoryRestaurantsView, UserRestaurantsView, RestaurantImageUploadView,
+     OfferByRestaurant, AllOffers, OfferById, BumperOffers, AllTopOffers
+)
 
 from project.api.restaurant import views
 
@@ -18,5 +22,10 @@ urlpatterns = [
     path('<int:pk>/', RestaurantGetUpdateDeleteView.as_view(), name='get_update_delete_restaurant'),
     path('<int:restaurant_id>/offer', OfferByRestaurant.as_view(), name='offer_by_restaurant'),
     path('offers', AllOffers.as_view(), name='all_offers'),
-    path('offer_by_name', OfferByName.as_view(), name='offer_by_name'),
+    path('offers/bumper', BumperOffers.as_view(), name='all_offers'),
+    path('offer/<int:id>', OfferById.as_view(), name='offer_by_id'),
+    path('top4', TopRated4RestaurantsView.as_view(), name='top_rated_4_restaurants'),
+    path('top/all', TopRatedRestaurantsView.as_view(), name='top_rated_restaurants'),
+    path('top/offers', AllTopOffers.as_view(), name='top_rated_offers'),
+
 ]

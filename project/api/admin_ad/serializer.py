@@ -5,9 +5,9 @@ from project.feed.models.admin_ad import AdminAd
 class AdminAdSerializer(serializers.ModelSerializer):
 
     CATEGORY_FREQUENCY = {
-        'Silver': 100,
-        'Gold': 250,
-        'Diamond': 500
+        'S': 100,
+        'G': 250,
+        'D': 500
     }
     frequency = serializers.SerializerMethodField()
 

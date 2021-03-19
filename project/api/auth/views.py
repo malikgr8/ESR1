@@ -68,8 +68,26 @@ class ChangePassowrdView(APIView):
         user.save()
         logout(request)
         return Response('Password changed successfully. Please login again with new password')
-
   
+
+class UpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        first_name = request.data.get('first_name', '')
+        last_name = request.data.get('last_name', '')
+        email = request.data.get('email', '')
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        try:
+            user.save()
+            return Response('User info updated succesfully.')
+        except:
+            return Response('something went wrong please try again.')
+
+
 @api_view(['POST'])
 def authenticate(request):
     data = {

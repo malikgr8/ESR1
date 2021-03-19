@@ -12,7 +12,7 @@ from project.api.base import GetObjectMixin
 from project.api.categories.serializers import CategorySerializer
 from project.api.permissions import IsUserOrReadOnly
 from project.api.restaurant.serializers import RestaurantSerializer, RestaurantImageUploadSerializer, OfferSerializer
-from project.feed.models import Restaurant, Category, Offer
+from project.feed.models import Restaurant, Category, Offer, Review
 from project.feed.models.coupon import Coupon
 from project.feed.models.forms import CouponApplyForm
 from project.feed.models.offer import Offer
@@ -34,6 +34,22 @@ class ListAllRestaurantsView(ListAPIView):
                                        Q(city__icontains=search_string)).order_by('reviews')
         return queryset
 
+
+class TopRatedRestaurantsView(GenericAPIView):
+    serializer_class = RestaurantSerializer
+    queryset = Review.objects.all().select_related('restaurant').order_by('restaurant', 'rating_overall').distinct('restaurant')
+
+    def get(self, request):
+        restaurant_list = []
+        for review in self.get_queryset():
+            restaurant_list.append(review.restaurant)
+        return Response(self.serializer_class(restaurant_list, many=True).data)
+
+
+class TopRated4RestaurantsView(TopRatedRestaurantsView):
+
+    queryset = Review.objects.all().select_related('restaurant').order_by('restaurant', 'rating_overall').distinct('restaurant')[:4]
+     
 
 class NewRestaurantView(GenericAPIView):
     serializer_class = RestaurantSerializer
@@ -111,13 +127,28 @@ class AllOffers(ListAPIView):
         return Offer.objects.filter(approval_status=True)
 
 
-class OfferByName(GenericAPIView):
+class AllTopOffers(GenericAPIView):
+    serializer_class = OfferSerializer
+    queryset = Review.objects.all().select_related('offer').order_by('offer', 'rating_overall').distinct('offer')
+    def get(self, request):
+        offer_list = []
+        for review in self.get_queryset():
+            offer_list.append(review.offer)
+        return Response(self.serializer_class(offer_list, many=True).data)
+
+class BumperOffers(ListAPIView):
+    serializer_class = OfferSerializer
+
+    def get_queryset(self):
+        return Offer.objects.filter(approval_status=True, discounted_price__gte=50.0)
+
+
+class OfferById(GenericAPIView):
     serializer_class = OfferSerializer
     queryset = Offer.objects.all()
 
     def get(self, request, **kwargs):
-        import pdb;pdb.set_trace()
-        offer = self.queryset.filter(name=request.data.get('offer_name'), approval_status=True)
+        offer = self.queryset.filter(id=kwargs.get('id'), approval_status=True)
         serializer = self.get_serializer(offer, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 

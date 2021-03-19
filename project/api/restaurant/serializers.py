@@ -1,17 +1,22 @@
 from rest_framework import serializers
-from project.feed.models import Restaurant, Offer
+from project.feed.models import Restaurant, Offer, Review
 from project.api.reviews.serializers import ReviewSerializer
+from django.db.models import Avg
 
 class RestaurantSerializer(serializers.ModelSerializer):
 
 
     reviews = ReviewSerializer(read_only=True, many=True)
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurant
         fields = ['id', 'name', 'country', 'street', 'city', 'zip', 'website', 'phone_number',
                   'email', 'opening_hours', 'price_level', 'category', 'user', 'reviews', 'image']
         read_only_fields = ['id', 'user', 'reviews']
+
+    def get_category(self, restaurant):
+        return restaurant.category.name
 
     # def to_representation(self, instance):
     #     data = super().to_representation(instance)
@@ -38,8 +43,28 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ['id', 'name', 'discounted_price',
-                  'original_price', 'restaurant_id', 'image_url',
-                  'valid_from', 'valid_till',
+        fields = ['id', 'name', 'discounted_price', 'rating',
+                  'original_price', 'restaurant_id', 'image_url', 'reviews_count',
+                  'valid_from', 'valid_till', 'restaurant_name', 'restaurant_category'
                   ]
         read_only_fields = ['approval_status']
+
+    restaurant_name = serializers.SerializerMethodField()
+    restaurant_category = serializers.SerializerMethodField()
+    reviews_count = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
+    
+
+    def get_restaurant_name(self, offer):
+        return offer.restaurant.name
+    
+    def get_restaurant_category(self, offer):
+        return offer.restaurant.category.name
+    
+    def get_reviews_count(self, offer):
+        return Review.objects.filter(offer=offer.id).count()
+    
+    def get_rating(self, offer):
+        return Review.objects.filter(offer=offer.id).aggregate(ave_rating=Avg('rating_overall'))
+    
+    

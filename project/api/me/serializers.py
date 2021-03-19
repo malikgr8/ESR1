@@ -2,6 +2,10 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from project.feed.models import Profile
 from project.feed.models.coupon import Coupon
+from project.feed.models.user_coupon import UserCoupon
+from project.feed.models.user_offers import UserOffers
+from project.api.restaurant.serializers import OfferSerializer
+
 
 User = get_user_model()
 
@@ -125,3 +129,33 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile']
         read_only_fields = ['id', 'profile']
+
+
+class UserCoupnSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserCoupon
+        fields = ['user', 'used_at', 'coupon_offers']
+
+    coupon_offers = serializers.SerializerMethodField()
+
+    def get_coupon_offers(self, query_set):
+        offers = []
+        for user_coupon in query_set:
+            offers.append(user_coupon.coupon.coupon_offer)
+        return OfferSerializer(offers, many=True).data
+
+
+class UserOfferSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserOffers
+        fields = ['offers']
+
+    offers = serializers.SerializerMethodField()
+
+    def get_offers(self, query_set):
+        offers = []
+        for offer in query_set:
+            offers.append(offer.offer)
+        return OfferSerializer(offers, many=True).data
