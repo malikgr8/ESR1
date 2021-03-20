@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from django.contrib import auth
@@ -41,9 +42,9 @@ def signup(request):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])
 @permission_classes([IsAuthenticated])
-def login(request, format=None):
+def login(request):
     content = {
-        'message': 'login successful'
+        'details': status.HTTP_200_OK
     }
     return Response(content)
 
