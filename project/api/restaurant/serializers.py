@@ -8,22 +8,23 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
     reviews = ReviewSerializer(read_only=True, many=True)
     category = serializers.SerializerMethodField()
+    reviews_count = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurant
-        fields = ['id', 'name', 'country', 'street', 'city', 'zip', 'website', 'phone_number',
-                  'email', 'opening_hours', 'price_level', 'category', 'user', 'reviews', 'image']
-        read_only_fields = ['id', 'user', 'reviews']
+        fields = ['id', 'name', 'country', 'street', 'city', 'zip', 'website', 'phone_number', 'rating',
+                  'email', 'opening_hours', 'price_level', 'category', 'user', 'reviews', 'image', 'reviews_count']
+        read_only_fields = ['id', 'user', 'reviews',]
 
     def get_category(self, restaurant):
         return restaurant.category.name
 
-    # def to_representation(self, instance):
-    #     data = super().to_representation(instance)
-    #     return {
-    #         **data,
-    #         'restaurants_count': instance.restaurants.count(),
-    #     }
+    def get_reviews_count(self, restaurant):
+        return Review.objects.filter(restaurant=restaurant.id).count()
+    
+    def get_rating(self, restaurant):
+        return Review.objects.filter(restaurant=restaurant.id).aggregate(ave_rating=Avg('rating_overall'))
 
     def create(self, validated_data):
         return Restaurant.objects.create(

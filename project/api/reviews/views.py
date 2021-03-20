@@ -13,6 +13,15 @@ from project.feed.models import Restaurant, Review, ReviewLike, Offer
 from project.feed.models.tag import Tag
 
 
+class TopReviewsView(GenericAPIView):
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+
+    def get(self, request):
+        serializer = self.get_serializer(self.queryset.order_by('-rating_overall'), many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
+
 class SearchTagsView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TagSerializer
@@ -50,7 +59,7 @@ class CreateReview(GenericAPIView):
             data=data,
             context={'request': request},
         )
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid()
         review = serializer.create(serializer.validated_data)
         return Response(self.serializer_class(review).data, status.HTTP_201_CREATED)
 

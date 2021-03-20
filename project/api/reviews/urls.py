@@ -3,7 +3,7 @@ from django.urls import path
 from project.api.reviews.views import (
     NewReviewView, RestaurantReviewsView, UserReviewsView, ReviewGetUpdateDeleteView,
     LikeUnlikeReviewView, LikedReviewsView, CommentedReviewsView, GetReviewByRestaurantView, 
-    CreateReview, AddReviewImage, SearchTagsView
+    CreateReview, AddReviewImage, SearchTagsView, TopReviewsView
 )
 
 app_name = 'reviews'
@@ -13,6 +13,7 @@ urlpatterns = [
     path('post', CreateReview.as_view(), name='create_review'),
     path('post/image', AddReviewImage.as_view(), name='create_review'),
     path('search/tag', SearchTagsView.as_view(), name='search_tags'),
+    path('top', TopReviewsView.as_view(), name='top_reviews'),
     
 
 

@@ -149,11 +149,17 @@ class AllTopOffers(GenericAPIView):
             offer_list.append(review.offer)
         return Response(self.serializer_class(offer_list, many=True).data)
 
+
 class BumperOffers(ListAPIView):
     serializer_class = OfferSerializer
 
     def get_queryset(self):
-        return Offer.objects.filter(approval_status=True, discounted_price__gte=50.0)
+        bumpber_percentage = 0.9
+        from django.db.models import F
+        return Offer.objects.filter(
+            approval_status=True,
+            discounted_price__lt=F('original_price') * bumpber_percentage
+        )
 
 
 class OfferById(GenericAPIView):

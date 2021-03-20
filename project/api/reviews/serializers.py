@@ -28,8 +28,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             'rating_ambiance', 
             'rating_quality', 
             'rating_money_value', 
-            'rating_overall',
             'updated_at',
+            'rating_overall',
             'image',
             'tags'
         ]
@@ -52,7 +52,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             rating_ambiance=post_data.get('rating_ambiance'),
             rating_quality=post_data.get('rating_quality'),
             rating_money_value=post_data.get('rating_money_value'),
-            rating_overall=rating_overall
+            rating_overall=rating_overall,
+            tags=post_data.get('tags')
         )
     
     def get_user(self, review):
