@@ -16,10 +16,12 @@ class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     restaurant = serializers.SerializerMethodField()
     offer = serializers.SerializerMethodField()
+    review_id = serializers.SerializerMethodField()
     
     class Meta:
         model = Review
         fields = [
+            'review_id',
             'user', 
             'restaurant', 
             'offer', 
@@ -55,7 +57,10 @@ class ReviewSerializer(serializers.ModelSerializer):
             rating_overall=rating_overall,
             tags=post_data.get('tags')
         )
-    
+
+    def get_review_id(self, review):
+        return review.id
+
     def get_user(self, review):
         return "{} {}".format(review.user.first_name, review.user.last_name) 
     
