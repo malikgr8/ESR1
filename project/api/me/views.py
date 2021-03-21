@@ -78,21 +78,22 @@ class CouponApply(mixins.CreateModelMixin, GenericAPIView):
         """
         user = request.user
         coupon_code = request.data.get('coupon_code')
-        coupon = Coupon.objects.get(code=coupon_code)
-        if coupon:
-            user_coupon = UserCoupon(
-                user=user,
-                coupon=coupon,
-                used_at=datetime.now()
-            )
-            user_coupon.save()
-            return Response(
-                {
-                    'message': "Coupon successfully applied.",
-                    'coupon_applied': True
-                }
-            )
-        else:
+        try:
+            coupon = Coupon.objects.get(code=coupon_code)
+            if coupon:
+                user_coupon = UserCoupon(
+                    user=user,
+                    coupon=coupon,
+                    used_at=datetime.now()
+                )
+                user_coupon.save()
+                return Response(
+                    {
+                        'message': "Coupon successfully applied.",
+                        'coupon_applied': True
+                    }
+                )
+        except:
             return Response(
                 {
                     'message': "Invalid coupon code.",
