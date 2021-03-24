@@ -20,10 +20,16 @@ def signup(request):
     last_name = request.data.get('last_name')
 
     if not re.search(regex, mobile_number):
-        raise ValidationError('moblile number is invalid')
+        return Response({
+            "message": 'Invalid Phone number.',
+            "code": status.HTTP_403_FORBIDDEN
+        })
     password = request.data.get('password')
     if len(password) < 8:
-        raise ValidationError('password length should be greater than 8')
+        return Response({
+            "message": 'Password must have minimum 8 letters.',
+            "code": status.HTTP_403_FORBIDDEN
+        })
     if not first_name or not last_name:
         raise ValidationError('Both First Name and Last Name are required')
     try:
@@ -34,9 +40,15 @@ def signup(request):
             last_name=last_name
         )
         user.save()
-        return Response('user successfully registerd')
+        return Response({
+            "message": 'user successfully registered',
+            "status_code": status.HTTP_200_OK
+        })
     except:
-        return Response('user registration failed.')
+        return Response({
+            "message": 'user registration failed',
+            "status_code": status.HTTP_400_BAD_REQUEST
+        })
 
 
 @api_view(['POST'])
