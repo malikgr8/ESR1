@@ -49,9 +49,9 @@ class CreateReview(GenericAPIView):
     serializer_class = ReviewSerializer
 
     def post(self, request):
-        data = request.data
-        restaurant = Restaurant.objects.get(pk=data.pop('restaurant_id'))
-        offer = Offer.objects.get(pk=data.pop('offer_id'))
+        data = request.data.dict()
+        restaurant = Restaurant.objects.get(pk=int(data.pop('restaurant_id')))
+        offer = Offer.objects.get(pk=int(data.pop('offer_id')))
 
         data['restaurant'] = restaurant
         data['offer'] = offer
@@ -60,7 +60,7 @@ class CreateReview(GenericAPIView):
             context={'request': request},
         )
         serializer.is_valid()
-        review = serializer.create(serializer.validated_data)
+        review = serializer.create(data)
         return Response(self.serializer_class(review).data, status.HTTP_201_CREATED)
 
 

@@ -16,12 +16,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     restaurant = serializers.SerializerMethodField()
     offer = serializers.SerializerMethodField()
-    review_id = serializers.SerializerMethodField()
     
     class Meta:
         model = Review
         fields = [
-            'review_id',
             'user', 
             'restaurant', 
             'offer', 
@@ -37,12 +35,14 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        import pdb; pdb.set_trace()
         post_data = self.context.get('request').data
+        post_data = validated_data
         rating_list = [
-            post_data.get('rating_taste'),
-            post_data.get('rating_ambiance'),
-            post_data.get('rating_quality'),
-            post_data.get('rating_money_value')
+            int(post_data.get('rating_taste')),
+            int(post_data.get('rating_ambiance')),
+            int(post_data.get('rating_quality')),
+            int(post_data.get('rating_money_value'))
         ]
         rating_overall = sum(rating_list) / len(rating_list)
         return Review.objects.create(
@@ -50,17 +50,15 @@ class ReviewSerializer(serializers.ModelSerializer):
             restaurant=post_data.get('restaurant'),
             offer=post_data.get('offer'),
             comment=post_data.get('comment'),
-            rating_taste=post_data.get('rating_taste'),
-            rating_ambiance=post_data.get('rating_ambiance'),
-            rating_quality=post_data.get('rating_quality'),
-            rating_money_value=post_data.get('rating_money_value'),
+            rating_taste=int(post_data.get('rating_taste')),
+            rating_ambiance=int(post_data.get('rating_ambiance')),
+            rating_quality=int(post_data.get('rating_quality')),
+            rating_money_value=int(post_data.get('rating_money_value')),
             rating_overall=rating_overall,
-            tags=post_data.get('tags')
+            tags=post_data.get('tags'),
+            image=post_data.get('image')
         )
-
-    def get_review_id(self, review):
-        return review.id
-
+    
     def get_user(self, review):
         return "{} {}".format(review.user.first_name, review.user.last_name) 
     
