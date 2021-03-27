@@ -117,8 +117,16 @@ class UserFavOffersView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        offers = []
         info = UserOffers.objects.filter(user=request.user).select_related('offer')
+        info = UserOfferSerializer(info).data
+        return Response(info)
+
+
+class GetUserOfferView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, **kwargs):
+        info = UserOffers.objects.filter(user=request.user, offer=kwargs.get('offer_id')).select_related('offer')
         info = UserOfferSerializer(info).data
         return Response(info)
 
