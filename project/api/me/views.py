@@ -17,6 +17,7 @@ from datetime import datetime
 from rest_framework.views import APIView
 from project.api.restaurant.serializers import OfferSerializer
 from project.api.me.serializers import UserCoupnSerializer, UserOfferSerializer
+from project.feed.models.offer import Offer
 
 
 User = get_user_model()
@@ -78,22 +79,21 @@ class CouponApply(mixins.CreateModelMixin, GenericAPIView):
         """
         user = request.user
         coupon_code = request.data.get('coupon_code')
-        try:
-            coupon = Coupon.objects.get(code=coupon_code)
-            if coupon:
-                user_coupon = UserCoupon(
-                    user=user,
-                    coupon=coupon,
-                    used_at=datetime.now()
-                )
-                user_coupon.save()
-                return Response(
-                    {
-                        'message': "Coupon successfully applied.",
-                        'coupon_applied': True
-                    }
-                )
-        except:
+        coupon = Coupon.objects.get(code=coupon_code)
+        if coupon:
+            user_coupon = UserCoupon(
+                user=user,
+                coupon=coupon,
+                used_at=datetime.now()
+            )
+            user_coupon.save()
+            return Response(
+                {
+                    'message': "Coupon successfully applied.",
+                    'coupon_applied': True
+                }
+            )
+        else:
             return Response(
                 {
                     'message': "Invalid coupon code.",
@@ -112,6 +112,7 @@ class UserCouponsView(APIView):
         info = UserCoupnSerializer(info).data
         return Response(info)
 
+
 class UserFavOffersView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -121,3 +122,22 @@ class UserFavOffersView(APIView):
         info = UserOfferSerializer(info).data
         return Response(info)
 
+
+class AddUserFavOfferView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        user = request.user
+        try:
+            offer = Offer.objects.get(pk=request.data.get('offer_id'))
+            fav_offer = UserOffers(
+                user=user,
+                offer=offer
+            )
+            fav_offer.save()
+            return Response({
+                'message': 'offer added into favourites.',
+                'code': 200
+            })
+        except:
+            return Response('invalid offer id.')

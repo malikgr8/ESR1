@@ -1,6 +1,10 @@
 from django.urls import path
 
-from project.api.me.views import GetUpdateUserProfileView, CouponApply, GetUserProfileView, UserCouponsView, UserFavOffersView
+from project.api.me.views import (
+    GetUpdateUserProfileView, CouponApply,
+    GetUserProfileView, UserCouponsView, UserFavOffersView,
+    AddUserFavOfferView
+)
 
 app_name = 'me'
 
@@ -10,4 +14,6 @@ urlpatterns = [
     path('coupon/apply', CouponApply.as_view(), name='apply_coupon'),
     path('coupon/all', UserCouponsView.as_view(), name='all_coupons'),
     path('offers', UserFavOffersView.as_view(), name='user_all_offers'),
+    path('add/offer', AddUserFavOfferView.as_view(), name='add_user_fav_offer'),
+
 ]
