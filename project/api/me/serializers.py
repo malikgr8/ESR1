@@ -143,7 +143,7 @@ class UserCoupnSerializer(serializers.ModelSerializer):
         offers = []
         for user_coupon in query_set:
             offers.append(user_coupon.coupon.coupon_offer)
-        return OfferSerializer(offers, many=True).data
+        return OfferSerializer(offers, many=True, context=self.context).data
 
 
 class UserOfferSerializer(serializers.ModelSerializer):
@@ -158,4 +158,4 @@ class UserOfferSerializer(serializers.ModelSerializer):
         offers = []
         for offer in query_set:
             offers.append(offer.offer)
-        return OfferSerializer(offers, many=True).data
+        return OfferSerializer(offers, many=True, context=self.context).data

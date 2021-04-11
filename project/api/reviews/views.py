@@ -13,7 +13,7 @@ from project.feed.models import Restaurant, Review, ReviewLike, Offer
 from project.feed.models.tag import Tag
 
 
-class TopReviewsView(GenericAPIView):
+class  TopReviewsView(GenericAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
 
@@ -99,7 +99,7 @@ class RestaurantReviewsView(GetObjectMixin, ListAPIView):
 
     def filter_queryset(self, queryset):
         restaurant = self.get_object_by_model(Restaurant, pk=self.kwargs.get('pk'))
-        return queryset.filter(restaurant=restaurant)
+        return queryset.filter(restaurant=restaurant).order_by('-created_at')
 
 
 class UserReviewsView(ListAPIView):

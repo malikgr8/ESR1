@@ -21,3 +21,6 @@ class UserOffers(models.Model):
     class Meta:
         verbose_name = 'UserOffer'
         verbose_name_plural = 'UserOffers'
+
+    def __str__(self):
+        return self.user.username

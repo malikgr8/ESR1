@@ -17,7 +17,7 @@ from project.feed.models.coupon import Coupon
 from project.feed.models.forms import CouponApplyForm
 from project.feed.models.offer import Offer
 import time as _time
-
+from django.db.models import Avg
 #from urllib3.util import request
 
 
@@ -38,25 +38,32 @@ class ListAllRestaurantsView(GenericAPIView):
             if offers:
                 context['offers'] = self.serializer_class(offers, many=True).data
             
-            restaurants = self.queryset_restaurant.filter(Q(name__icontains=search_string))
+            restaurants = self.queryset_restaurant.filter(
+                Q(name__icontains=search_string) |
+                Q(category__name__icontains=search_string) |
+                Q(address__icontains=search_string)
+            )
             if restaurants:
                 context['restaurants']= self.serializer_class_restaurant(restaurants, many=True).data
             if context:
                 return Response(context)
             return Response('Nothing Found')
+        # if no search query str provided returns all restaurants
         return Response(self.serializer_class_restaurant(self.queryset_restaurant, many=True).data)
         
 
 
 class TopRatedRestaurantsView(GenericAPIView):
     serializer_class = RestaurantSerializer
-    queryset = Review.objects.all().select_related('restaurant').order_by('restaurant', 'rating_overall').distinct('restaurant')
+    queryset = Review.objects.all().order_by('restaurant').distinct('restaurant')
 
     def get(self, request):
         restaurant_list = []
         for review in self.get_queryset():
             restaurant_list.append(review.restaurant)
-        return Response(self.serializer_class(restaurant_list, many=True).data)
+        restaurant_list_serialized = self.serializer_class(restaurant_list, many=True).data
+        sorted_restaurant_list= reversed(sorted(restaurant_list_serialized, key=lambda k: k['rating']['avg_rating'])) 
+        return Response(sorted_restaurant_list)
 
 
 class TopRated4RestaurantsView(TopRatedRestaurantsView):
@@ -126,21 +133,16 @@ class ListCategoryRestaurantsView(GetObjectMixin, ListAPIView):
         return queryset.filter(category=category)
 
 
-class UserRestaurantsView(ListAPIView):
-    serializer_class = RestaurantSerializer
-
-    def get_queryset(self):
-        return Restaurant.objects.filter(user__username=self.request.user.username).order_by('created')
-
-
 class AllOffers(ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
 
     def get_queryset(self):
-        return Offer.objects.filter(approval_status=True)
+        return Offer.objects.filter(approval_status=True, is_redeemable=True)
 
 
 class AllTopOffers(GenericAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
     queryset = Review.objects.all().select_related('offer').order_by('offer', 'rating_overall').distinct('offer')
     def get(self, request):
@@ -151,18 +153,15 @@ class AllTopOffers(GenericAPIView):
 
 
 class BumperOffers(ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
 
     def get_queryset(self):
-        bumpber_percentage = 0.9
-        from django.db.models import F
-        return Offer.objects.filter(
-            approval_status=True,
-            discounted_price__lt=F('original_price') * bumpber_percentage
-        )
+        return Offer.objects.filter(approval_status=True, is_bumper=True)
 
 
 class OfferById(GenericAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
     queryset = Offer.objects.all()
 

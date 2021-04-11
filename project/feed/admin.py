@@ -13,12 +13,9 @@ from project.feed.models.tag import Tag
 
 
 class RestaurantAdmin(admin.ModelAdmin):
-    list_display = ['user', 'name', 'country', 'street', 'city', 'zip', 'website', 'phone_number',
-                    'email', 'opening_hours', 'price_level', 'image']
-
-
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['user', 'restaurant', 'offer', 'comment', 'rating']
+    list_display = ['name', 'website', 'phone_number', 'email', 'opening_hours', 'country', 'address', 'city',
+        'zip_code', 'lat', 'long', 'price_level', 'image', 'logo_image', 'cover_image', 'menu_image', 'is_featured'
+    ]
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -42,10 +39,9 @@ class CommentLikeAdmin(admin.ModelAdmin):
 
 
 class OfferAdmin(admin.ModelAdmin):
-   list_display = ['name', 'discounted_price',
-                   'original_price', 'restaurant',
-                   'image_url', 'valid_till',
-                    'valid_from']
+   list_display = ['name', 'discounted_price', 'original_price', 'restaurant', 'image_url', 'valid_till', 'valid_from',
+        'is_bumper', 'is_redeemable'
+    ]
 
 
 class CouponAdmin(admin.ModelAdmin):
@@ -60,14 +56,13 @@ class CouponAdmin(admin.ModelAdmin):
 
 
 class UserCouponAdmin(admin.ModelAdmin):
-    list_display = ['coupon', 'user', 'used_at']
+    list_display = ['coupon', 'user', 'used_at',]
     search_fields = ['coupon__code']
-
+    readonly_fields = ('used_at', )
 
 
 
 admin.site.register(Restaurant, RestaurantAdmin)
-# admin.site.register(Review, ReviewAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Category, CategoryAdmin)

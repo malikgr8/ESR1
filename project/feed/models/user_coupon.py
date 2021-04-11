@@ -8,6 +8,8 @@ from project.feed.models.coupon import Coupon
 
 class UserCoupon(models.Model):
 
+    REDEEM_LIMIT = 5
+
     coupon = models.ForeignKey(
         Coupon,
         on_delete=models.SET_NULL,

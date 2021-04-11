@@ -109,7 +109,7 @@ class UserCouponsView(APIView):
     def get(self, request):
         offers = []
         info = UserCoupon.objects.filter(user=request.user).select_related('coupon')
-        info = UserCoupnSerializer(info).data
+        info = UserCoupnSerializer(info, context={'request': request}).data
         return Response(info)
 
 
@@ -118,7 +118,7 @@ class UserFavOffersView(APIView):
     
     def get(self, request):
         info = UserOffers.objects.filter(user=request.user).select_related('offer')
-        info = UserOfferSerializer(info).data
+        info = UserOfferSerializer(info, context={'request': request}).data
         return Response(info)
 
 
@@ -145,6 +145,20 @@ class AddUserFavOfferView(APIView):
             fav_offer.save()
             return Response({
                 'message': 'offer added into favourites.',
+                'code': 200
+            })
+        except:
+            return Response('invalid offer id.')
+
+class RemoveUserFavOfferView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        try:
+            UserOffers.objects.get(user=request.user, offer=request.data.get('offer_id')).delete()
+            return Response({
+                'message': 'offer deleted from favourites.',
                 'code': 200
             })
         except:

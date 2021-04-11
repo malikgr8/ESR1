@@ -14,15 +14,15 @@ class TagSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
 
     user = serializers.SerializerMethodField()
-    restaurant = serializers.SerializerMethodField()
-    offer = serializers.SerializerMethodField()
+    restaurant_name = serializers.SerializerMethodField()
+    offer_name = serializers.SerializerMethodField()
     
     class Meta:
         model = Review
         fields = [
             'user', 
-            'restaurant', 
-            'offer', 
+            'restaurant_name', 
+            'offer_name', 
             'comment', 
             'rating_taste', 
             'rating_ambiance', 
@@ -55,14 +55,14 @@ class ReviewSerializer(serializers.ModelSerializer):
             rating_money_value=int(post_data.get('rating_money_value')),
             rating_overall=rating_overall,
             tags=post_data.get('tags'),
-            image=post_data.get('image')
+            image=post_data.get('image', '')
         )
     
     def get_user(self, review):
         return "{} {}".format(review.user.first_name, review.user.last_name) 
     
-    def get_offer(self, review):
+    def get_offer_name(self, review):
         return review.offer.name
     
-    def get_restaurant(self, review):
+    def get_restaurant_name(self, review):
         return review.restaurant.name
