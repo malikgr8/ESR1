@@ -53,7 +53,6 @@ class Restaurant(models.Model):
     image = models.ImageField(verbose_name='restaurant_image', blank=True)
     logo_image = models.ImageField(verbose_name='restaurant_logo_image',blank=True)
     cover_image = models.ImageField(verbose_name='restaurant_cover_image',blank=True)
-    menu_image = models.ImageField(verbose_name='restaurant_menu_image',blank=True)
     
     is_featured = models.BooleanField(default=False)
 

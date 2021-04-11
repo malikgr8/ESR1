@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from project.feed.models import Restaurant, Offer, Review
+from project.feed.models.menu_image import MenuImage
 from project.api.reviews.serializers import ReviewSerializer
 from django.db.models import Avg
 from django.core.exceptions import ObjectDoesNotExist
@@ -13,12 +14,13 @@ class RestaurantSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     reviews_count = serializers.SerializerMethodField()
     rating = serializers.SerializerMethodField()
+    menu_images = serializers.SerializerMethodField()
 
     class Meta:
         model = Restaurant
         fields = ['id', 'name', 'country', 'address', 'city', 'zip_code', 'lat', 'long', 'website',
             'phone_number', 'rating', 'email', 'opening_hours', 'price_level', 'category', 'reviews',
-            'image', 'logo_image', 'cover_image', 'menu_image', 'is_featured', 'reviews_count']
+            'image', 'logo_image', 'cover_image', 'menu_images', 'is_featured', 'reviews_count']
         read_only_fields = ['id', 'reviews',]
 
     def get_category(self, restaurant):
@@ -30,6 +32,13 @@ class RestaurantSerializer(serializers.ModelSerializer):
     def get_rating(self, restaurant):
         return Review.objects.filter(restaurant=restaurant.id).aggregate(avg_rating=Avg('rating_overall'))
     
+    def get_menu_images(self, restaurant):
+        menu_images = []
+        objs = MenuImage.objects.filter(restaurant__pk=restaurant.pk).order_by('sort_order')
+        for obj in objs:
+            menu_images.append(obj.image.url)
+        return menu_images
+
     def create(self, validated_data):
         return Restaurant.objects.create(
             **validated_data,
@@ -101,13 +110,16 @@ class OfferSerializer(serializers.ModelSerializer):
         except:
             user = self.context.user
         today = datetime.now()
-        
+        if not offer.is_redeemable or offer.is_bumper:
+            return False
         user_coupon = UserCoupon.objects.filter(
             user=user, 
             used_at__year=today.year,
             used_at__month=today.month,
-            used_at__day=today.day
-        ).count()
-        if user_coupon >= UserCoupon.REDEEM_LIMIT:
+            used_at__day=today.day,
+        )
+        if user_coupon.filter(coupon__coupon_offer__pk=offer.pk):
+            return False
+        if user_coupon.count() >= UserCoupon.REDEEM_LIMIT:
             return False
         return True

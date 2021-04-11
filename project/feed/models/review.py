@@ -19,7 +19,6 @@ class Review(models.Model):
     rating_money_value = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     rating_overall = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     tags = models.CharField(max_length=256)
-    image = models.ImageField(blank= True,null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 

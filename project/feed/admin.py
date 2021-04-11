@@ -10,11 +10,13 @@ from .models.user_coupon import UserCoupon
 from .models.user_offers import UserOffers
 from project.feed.models.admin_ad import AdminAd
 from project.feed.models.tag import Tag
+from project.feed.models.reveiw_images import ReviewImage
+from project.feed.models.menu_image import MenuImage
 
 
 class RestaurantAdmin(admin.ModelAdmin):
     list_display = ['name', 'website', 'phone_number', 'email', 'opening_hours', 'country', 'address', 'city',
-        'zip_code', 'lat', 'long', 'price_level', 'image', 'logo_image', 'cover_image', 'menu_image', 'is_featured'
+        'zip_code', 'lat', 'long', 'price_level', 'image', 'logo_image', 'cover_image', 'is_featured'
     ]
 
 
@@ -75,3 +77,5 @@ admin.site.register(Review)
 admin.site.register(AdminAd)
 admin.site.register(UserOffers)
 admin.site.register(Tag)
+admin.site.register(ReviewImage)
+admin.site.register(MenuImage)

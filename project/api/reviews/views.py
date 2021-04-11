@@ -11,6 +11,7 @@ from project.api.permissions import IsUserOrReadOnly
 from project.api.reviews.serializers import ReviewSerializer, TagSerializer
 from project.feed.models import Restaurant, Review, ReviewLike, Offer
 from project.feed.models.tag import Tag
+from django.db.models import Count
 
 
 class  TopReviewsView(GenericAPIView):
@@ -27,9 +28,21 @@ class SearchTagsView(GenericAPIView):
     serializer_class = TagSerializer
 
     def get(self, request):
-        serializer = self.get_serializer(Tag.objects.filter(name__contains=request.GET.get('tag')), many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
-
+        try: 
+            restaurant = Restaurant.objects.get(pk=request.data.get('restaurant_id'))
+            if request.data.get('tag'):
+                serializer = self.get_serializer(Tag.objects.filter(
+                    name__contains=request.data.get('tag'), restaurant=restaurant, is_active=True),
+                    many=True
+                )
+            else:
+                 serializer = self.get_serializer(Tag.objects.filter(restaurant=restaurant, is_active=True), many=True)
+            if serializer.data:
+                return Response(serializer.data, status.HTTP_200_OK)
+            else:
+                return Response('tag not found')
+        except:
+            return Response('restaurant not found')
 
 
 class GetReviewByRestaurantView(GenericAPIView):
@@ -152,6 +165,19 @@ class LikeUnlikeReviewView(GetObjectMixin, APIView):
         review = self.get_object_by_model(Review, review_id)
         ReviewLike.objects.get(user=request.user, review=review).delete()
         return Response('Review unliked!')
+
+
+class PopularReviewsView(GenericAPIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def get(self, request):
+        reviews_like = ReviewLike.objects.values('review__id').annotate(count=Count('review_id')).order_by('-count')
+        reviews = []
+        for obj in reviews_like:
+            reviews.append(Review.objects.get(pk=obj.get('review__id')))
+        return Response(ReviewSerializer(reviews, many=True).data, status.HTTP_200_OK)
 
 
 class LikedReviewsView(GetObjectMixin, APIView):
