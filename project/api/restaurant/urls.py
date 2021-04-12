@@ -6,7 +6,7 @@ from project.api.restaurant.views import (
     TopRatedRestaurantsView, TopRated4RestaurantsView,
     ListCategoryRestaurantsView, RestaurantImageUploadView,
     OfferByRestaurant, AllOffers, OfferById, BumperOffers, AllTopOffers,
-    ListAllRestaurantsView
+    ListAllRestaurantsView, FeaturedOffers
 )
 
 from project.api.restaurant import views
@@ -29,6 +29,7 @@ urlpatterns = [
     path('offer/<int:id>', OfferById.as_view(), name='offer_by_id'),
     path('offers', AllOffers.as_view(), name='all_offers'),
     path('offers/bumper', BumperOffers.as_view(), name='all_bumper_offers'),
+    path('offers/featured', FeaturedOffers.as_view(), name='featured_offers'),
     
 
     
@@ -38,8 +39,6 @@ urlpatterns = [
     path('top/offers', AllTopOffers.as_view(), name='top_rated_offers'),
     path('top4', TopRated4RestaurantsView.as_view(), name='top_rated_4_restaurants'),
     path('new/', NewRestaurantView.as_view(), name='new_restaurant'),
-    path('img_upload/', RestaurantImageUploadView.as_view(), name='restaurant_image_upload'),
-    
-    
+    path('img_upload/', FeaturedOffers.as_view(), name='restaurant_image_upload'),
 
 ]

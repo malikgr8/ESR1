@@ -141,6 +141,14 @@ class AllOffers(ListAPIView):
         return Offer.objects.filter(approval_status=True, is_redeemable=True)
 
 
+class FeaturedOffers(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OfferSerializer
+
+    def get_queryset(self):
+        return Offer.objects.filter(approval_status=True, is_redeemable=True, restaurant__is_featured=True)
+
+
 class AllTopOffers(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
@@ -171,10 +179,10 @@ class OfferById(GenericAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 class OfferByRestaurant(GenericAPIView):
-    #id = Offer.objects.get(OfferSerializer)
+    permission_classes = [IsAuthenticated]
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
-    #queryset = Offer.objects.all()
+    
 
     def get(self, request, **kwargs):
         offer = self.queryset.filter(restaurant_id=kwargs.get('restaurant_id'), approval_status=True)
