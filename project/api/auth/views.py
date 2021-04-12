@@ -10,6 +10,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms.models import model_to_dict
 
 
 PASSWORD_REGEX = r"(?=.*?[0-9])"
@@ -50,7 +51,8 @@ def signup(request):
 @permission_classes([IsAuthenticated])
 def login(request, format=None):
     content = {
-        'message': 'login successful'
+        'message': 'login successful',
+        'user_info': model_to_dict(request.user, fields=['first_name', 'last_name', 'email', 'username'])
     }
     return Response(content)
 
@@ -110,6 +112,15 @@ class ForgotPassowrdView(APIView):
         return Response('Password changed successfully. Please login with new password')
 
 
+class GetProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response(
+            {'user_info': model_to_dict(request.user, fields=['first_name', 'last_name', 'email', 'username'])}
+        )
+
+
 class UpdateProfileView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -118,12 +129,20 @@ class UpdateProfileView(APIView):
         last_name = request.data.get('last_name', '')
         email = request.data.get('email', '')
         user = request.user
-        user.first_name = first_name
-        user.last_name = last_name
-        user.email = email
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if email:
+            user.email = email
         try:
             user.save()
-            return Response('User info updated succesfully.')
+            return Response(
+                {
+                    'user_info': model_to_dict(user, fields=['first_name', 'last_name', 'email', 'username']),
+                    'message':'User info updated succesfully.'
+                }
+            )
         except:
             return Response('something went wrong please try again.')
 
