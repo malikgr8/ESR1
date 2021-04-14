@@ -19,7 +19,8 @@ class AdminAdSerializer(serializers.ModelSerializer):
             'expiry', 
             'deeplink', 
             'is_active',
-            'frequency'
+            'frequency',
+            'image'
         ]
     
     def get_frequency(self, admin_ad):
