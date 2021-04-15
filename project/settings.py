@@ -183,12 +183,12 @@ USE_TZ = True
 
 
 STATIC_URL = '/static-files/'
-STATIC_ROOT = '/static-files'
+#STATIC_ROOT = '/static-files'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/media-files'
+#MEDIA_ROOT = '/media-files'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'data/') # 'data' is my media folder
 
 
