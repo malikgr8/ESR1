@@ -187,9 +187,19 @@ STATIC_URL = '/static-files/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+STATICFILES_DIRS = [
+    STATIC_ROOT,
+
+]
+
 MEDIA_URL = '/media/'
 #MEDIA_ROOT = '/media-files'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'data/') # 'data' is my media folder
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data') # 'data' is my media folder
+
+STATICFILES_DIRS = [
+    STATIC_ROOT,
+    MEDIA_ROOT
+]
 
 
 # Activate Django-Heroku.
