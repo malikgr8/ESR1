@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # 'django_simple_coupons',
     'timezone_field',
     # 'firebase_authentication',
+    'project',
 ]
 
 # FIREBASE_PATH = os.path.join(BASE_DIR, 'keyfile.json')
@@ -92,6 +93,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+
             ],
         },
     },
