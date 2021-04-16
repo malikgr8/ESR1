@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     # 'django_simple_coupons',
     'timezone_field',
     # 'firebase_authentication',
-    'phoenix1',
+    'app',
 ]
 
 # FIREBASE_PATH = os.path.join(BASE_DIR, 'keyfile.json')
