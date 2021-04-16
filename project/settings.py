@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # 'django_simple_coupons',
     'timezone_field',
     # 'firebase_authentication',
+    'phoenix1',
 ]
 
 # FIREBASE_PATH = os.path.join(BASE_DIR, 'keyfile.json')
@@ -182,14 +183,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 
-STATIC_URL = '/static/'
-#STATIC_ROOT = '/static-files'
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = '/staticfiles'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
-#MEDIA_ROOT = '/media-files'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'data') # 'data' is my media folder
+MEDIA_ROOT = '/media-files'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'data/') # 'data' is my media folder
+
 
 STATICFILES_DIRS = [
     BASE_DIR + '/data'
