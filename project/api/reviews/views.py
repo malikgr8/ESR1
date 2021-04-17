@@ -27,7 +27,7 @@ class SearchTagsView(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TagSerializer
 
-    def get(self, request):
+    def post(self, request):
         try: 
             restaurant = Restaurant.objects.get(pk=request.data.get('restaurant_id'))
             if request.data.get('tag'):
