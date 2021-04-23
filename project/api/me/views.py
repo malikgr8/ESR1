@@ -170,7 +170,10 @@ class AddUserFavOfferView(APIView):
                 'code': 200
             })
         except:
-            return Response('invalid offer id.')
+            return Response({
+                'message': 'Invalid offer id.',
+                'code': 422
+            })
 
 class RemoveUserFavOfferView(APIView):
     permission_classes = [IsAuthenticated]
@@ -184,4 +187,7 @@ class RemoveUserFavOfferView(APIView):
                 'code': 200
             })
         except:
-            return Response('invalid offer id.')
+            return Response({
+                'message': 'Invalid offer id.',
+                'code': 422
+            })
