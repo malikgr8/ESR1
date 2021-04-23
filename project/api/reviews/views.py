@@ -155,17 +155,19 @@ class LikeUnlikeReviewView(GetObjectMixin, APIView):
 
     def post(self, request, review_id):
         review = self.get_object_by_model(Review, review_id)
-        try:
-            ReviewLike.objects.create(user=request.user, review=review)
-        except ReviewLike.DoesNotExist:
-            raise Http404
-        return Response('Review liked!')
+        obj, created = ReviewLike.objects.get_or_create(user=request.user, review=review)
+        if created:
+            return Response('Review liked!')
+        else:
+            return Response('Already liked review.')
 
     def delete(self, request, review_id):
         review = self.get_object_by_model(Review, review_id)
-        ReviewLike.objects.get(user=request.user, review=review).delete()
-        return Response('Review unliked!')
-
+        try:
+            ReviewLike.objects.get(user=request.user, review=review).delete()
+            return Response('Review unliked!')
+        except ReviewLike.DoesNotExist:
+            return Response('Invalid review id')
 
 class PopularReviewsView(GenericAPIView):
     permission_classes = [
