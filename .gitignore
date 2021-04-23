@@ -2,4 +2,4 @@
 media-files
 staticfiles
 media
-
+**/__pycache__
