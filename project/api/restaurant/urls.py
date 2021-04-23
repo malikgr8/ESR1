@@ -17,6 +17,7 @@ urlpatterns = [
     # restaurant related routes
     path('<int:pk>/', RestaurantGetUpdateDeleteView.as_view(), name='get_update_delete_restaurant'),
     path('', ListAllRestaurantsView.as_view(), name='all'),
+   # path('all', ListAllRestaurantsView.as_view(), name='all_restaurants'),
     path('<int:restaurant_id>/offers', OfferByRestaurant.as_view(), name='offer_by_restaurant'),
     path('?search=<str:search_string>', ListAllRestaurantsView.as_view(), name='search_restaurant_offers'),
     # top avg rating of reviews based restraurants
