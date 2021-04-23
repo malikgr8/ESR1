@@ -144,6 +144,14 @@ class AllOffers(ListAPIView):
         return Offer.objects.filter(approval_status=True, is_redeemable=True)
 
 
+class NonFeaturedOffers(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OfferSerializer
+
+    def get_queryset(self):
+        return Offer.objects.filter(approval_status=True, is_redeemable=True, restaurant__is_featured=False)
+
+
 class FeaturedOffers(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
