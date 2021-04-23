@@ -9,6 +9,7 @@ from project.feed.models.coupon import Coupon
 class UserCoupon(models.Model):
 
     REDEEM_LIMIT = 5
+    REDEEM_HOURS_LIMIT = 24
 
     coupon = models.ForeignKey(
         Coupon,
