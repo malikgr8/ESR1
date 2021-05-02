@@ -8,6 +8,7 @@ from .restaurant import Restaurant
 class Offer(models.Model):
 
     name = models.CharField(verbose_name='offer_name', max_length=256)
+    description = models.TextField(blank=True, null=True, default='')
     discounted_price = models.FloatField(blank=True, null=True, default=0.0)
     original_price = models.FloatField(default=0.0)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
