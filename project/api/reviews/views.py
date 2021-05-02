@@ -157,17 +157,37 @@ class LikeUnlikeReviewView(GetObjectMixin, APIView):
         review = self.get_object_by_model(Review, review_id)
         obj, created = ReviewLike.objects.get_or_create(user=request.user, review=review)
         if created:
-            return Response('Review liked!')
+            return Response(
+                {
+                    'status_code': 200,
+                    'message': 'Review liked!'
+                }
+            )
         else:
-            return Response('Already liked review.')
+            return Response(
+                {
+                    'status_code': 422,
+                    'message': 'Already liked review.'
+                }
+            )
 
     def delete(self, request, review_id):
         review = self.get_object_by_model(Review, review_id)
         try:
             ReviewLike.objects.get(user=request.user, review=review).delete()
-            return Response('Review unliked!')
+            return Response(
+                {
+                    'status_code': 200,
+                    'message': 'Review unliked!'
+                }
+            )
         except ReviewLike.DoesNotExist:
-            return Response('Invalid review id')
+            return Response(
+                {
+                    'status_code': 422,
+                    'message': 'Invalid review id'
+                }
+            )
 
 class PopularReviewsView(GenericAPIView):
     permission_classes = [
