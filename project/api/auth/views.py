@@ -116,9 +116,9 @@ class GetProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response(
-            {'user_info': model_to_dict(request.user, fields=['first_name', 'last_name', 'email', 'username'])}
-        )
+        response = model_to_dict(request.user, fields=['first_name', 'last_name', 'email', 'username', 'date_joined'])
+        response['date_joined'] = str(response['date_joined'].date())
+        return Response({'user_info': response})
 
 
 class UpdateProfileView(APIView):
