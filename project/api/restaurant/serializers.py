@@ -57,7 +57,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ['id', 'name', 'discounted_price', 'rating', 'original_price', 'restaurant_id', 'image_url',
+        fields = ['id', 'name', 'description', 'discounted_price', 'rating', 'original_price', 'restaurant_id', 'image_url',
             'reviews_count', 'valid_from', 'valid_till', 'restaurant_name', 'restaurant_category', 'is_bumper',
             'is_redeemable', 'cover_image', 'can_review'
         ]
