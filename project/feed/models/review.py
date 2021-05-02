@@ -17,7 +17,7 @@ class Review(models.Model):
     rating_ambiance = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     rating_quality = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     rating_money_value = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
-    rating_overall = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
+    rating_overall = models.DecimalField(max_digits=5, decimal_places=2)
     tags = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
