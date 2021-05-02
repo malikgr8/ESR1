@@ -135,15 +135,16 @@ class UserCoupnSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserCoupon
-        fields = ['user', 'used_at', 'coupon_offers']
+        fields = ['used_at', 'coupon_offers']
 
     coupon_offers = serializers.SerializerMethodField()
+    used_at = serializers.SerializerMethodField()
+
+    def get_used_at(self, user_coupon):
+        return str(user_coupon.used_at.date())
 
     def get_coupon_offers(self, query_set):
-        offers = []
-        for user_coupon in query_set:
-            offers.append(user_coupon.coupon.coupon_offer)
-        return OfferSerializer(offers, many=True, context=self.context).data
+        return OfferSerializer(query_set.coupon.coupon_offer, context=self.context).data
 
 
 class UserOfferSerializer(serializers.ModelSerializer):

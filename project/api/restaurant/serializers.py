@@ -19,8 +19,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['id', 'name', 'country', 'address', 'city', 'zip_code', 'lat', 'long', 'website',
-            'phone_number', 'rating', 'email', 'opening_hours', 'price_level', 'category', 'reviews',
-            'image', 'logo_image', 'cover_image', 'menu_images', 'is_featured', 'reviews_count']
+            'phone_number', 'rating', 'email', 'opening_hours', 'price_level', 'category', 'restaurant_type',
+            'reviews', 'image', 'logo_image', 'cover_image', 'menu_images', 'is_featured', 'reviews_count']
         read_only_fields = ['id', 'reviews',]
 
     def get_category(self, restaurant):

@@ -130,8 +130,8 @@ class UserCouponsView(APIView):
     
     def get(self, request):
         offers = []
-        info = UserCoupon.objects.filter(user=request.user).select_related('coupon')
-        info = UserCoupnSerializer(info, context={'request': request}).data
+        info = UserCoupon.objects.filter(user=request.user)
+        info = UserCoupnSerializer(info, context={'request': request}, many=True).data
         return Response(info)
 
 
