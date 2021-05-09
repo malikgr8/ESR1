@@ -19,6 +19,7 @@ class Review(models.Model):
     rating_money_value = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     rating_overall = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     tags = models.CharField(max_length=256)
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
@@ -26,9 +27,9 @@ class Review(models.Model):
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
         ordering = ['-created_at']
-        unique_together = [(
-             'user', 'restaurant', 'offer'
-        ),]
+        # unique_together = [(
+        #      'user', 'restaurant', 'offer'
+        # ),]
     
     def __str__(self):
         return self.offer.name
