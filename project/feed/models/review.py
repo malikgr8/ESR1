@@ -11,7 +11,7 @@ class Review(models.Model):
 
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
-    offer =  models.ForeignKey(Offer, on_delete=models.CASCADE, null=True)
+    offer = models.ForeignKey(Offer, on_delete=models.CASCADE, null=True)
     comment = models.TextField(null=True, blank=True)
     rating_taste = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])
     rating_ambiance = models.IntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)])

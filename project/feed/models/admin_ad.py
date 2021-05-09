@@ -1,4 +1,14 @@
+import datetime
+
 from django.db import models
+
+
+def image_upload_path(instance, filename):
+    """
+    This function returns path of image to be stored
+    """
+
+    return f'images/admin_ads/{datetime.datetime.utcnow()}/title/'
 
 
 class AdminAd(models.Model):

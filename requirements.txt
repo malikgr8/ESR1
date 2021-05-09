@@ -21,9 +21,7 @@ itypes==1.2.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
-meds==1215
 Pillow==8.1.0
-project==20
 psycopg2==2.8.6
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -38,3 +36,5 @@ sqlparse==0.4.1
 uritemplate==3.0.1
 urllib3==1.26.3
 whitenoise==5.2.0
+django-storages==1.11.1
+boto3==1.17.69

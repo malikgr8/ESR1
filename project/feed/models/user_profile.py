@@ -5,6 +5,14 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 
+def image_upload_path(instance, filename):
+    """
+    This function returns path of image to be stored
+    """
+
+    return f'images/users/{instance.user.id}/profile_pictures/profile_picture'
+
+
 def code_generator(length=6):
     numbers = '0123456789'
     return ''.join(random.choice(numbers) for i in range(length))
@@ -40,6 +48,7 @@ class Profile(models.Model):
     )
 
     image = models.ImageField(
+        upload_to=image_upload_path,
         blank=True
     )
 
