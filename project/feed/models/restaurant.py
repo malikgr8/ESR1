@@ -1,9 +1,35 @@
+import datetime
+
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django_countries.fields import CountryField
 
 from project.feed.models import Category
+
+
+def image_upload_path(instance, filename):
+    """
+    This function returns path of image to be stored
+    """
+
+    return f'images/restaurants/{instance.name}/restaurant_image/{datetime.datetime.utcnow()}/'
+
+
+def logo_upload_path(instance, filename):
+    """
+    This function returns path of image to be stored
+    """
+
+    return f'images/restaurants/{instance.name}/restaurant_logo/{datetime.datetime.utcnow()}/'
+
+
+def cover_upload_path(instance, filename):
+    """
+    This function returns path of image to be stored
+    """
+
+    return f'images/restaurants/{instance.name}/restaurant_cover/{datetime.datetime.utcnow()}/'
 
 
 class Restaurant(models.Model):
@@ -50,12 +76,11 @@ class Restaurant(models.Model):
     created = models.DateTimeField(verbose_name='date_created', auto_now_add=True)
     modified = models.DateTimeField(verbose_name='date_modified', auto_now=True)
 
-    image = models.ImageField(verbose_name='restaurant_image', blank=True)
-    logo_image = models.ImageField(verbose_name='restaurant_logo_image',blank=True)
-    cover_image = models.ImageField(verbose_name='restaurant_cover_image',blank=True)
+    image = models.ImageField(upload_to=image_upload_path, verbose_name='restaurant_image', blank=True)
+    logo_image = models.ImageField(upload_to=logo_upload_path, verbose_name='restaurant_logo_image', blank=True)
+    cover_image = models.ImageField(upload_to=cover_upload_path, verbose_name='restaurant_cover_image', blank=True)
     
     is_featured = models.BooleanField(default=False)
-
 
     class Meta:
         verbose_name = 'Restaurant'

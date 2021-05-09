@@ -47,6 +47,18 @@ class ReviewSerializer(serializers.ModelSerializer):
             int(post_data.get('rating_money_value'))
         ]
         rating_overall = sum(rating_list) / len(rating_list)
+
+        old_reviews = Review.objects.filter(
+            user=self.context.get('request').user,
+            restaurant=post_data.get('restaurant'),
+            offer=post_data.get('offer'),
+        )
+
+        if old_reviews:
+            for review in old_reviews:
+                review.is_active = False
+                review.save()
+
         review = Review.objects.create(
             user=self.context.get('request').user,
             restaurant=post_data.get('restaurant'),

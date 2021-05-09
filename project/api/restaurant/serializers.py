@@ -59,7 +59,7 @@ class OfferSerializer(serializers.ModelSerializer):
         model = Offer
         fields = ['id', 'name', 'discounted_price', 'rating', 'original_price', 'restaurant_id', 'image_url',
             'reviews_count', 'valid_from', 'valid_till', 'restaurant_name', 'restaurant_category', 'is_bumper',
-            'is_redeemable', 'cover_image', 'can_review'
+            'is_redeemable', 'cover_image', 'can_review', 'lat', 'long'
         ]
         read_only_fields = ['approval_status']
 
@@ -70,7 +70,8 @@ class OfferSerializer(serializers.ModelSerializer):
     cover_image = serializers.SerializerMethodField()
     can_review = serializers.SerializerMethodField()
     is_redeemable = serializers.SerializerMethodField()
-    
+    lat = serializers.FloatField(source='restaurant.lat', read_only=True)
+    long = serializers.ReadOnlyField(source='restaurant.long', read_only=True)
 
     def get_restaurant_name(self, offer):
         return offer.restaurant.name

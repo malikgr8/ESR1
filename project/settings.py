@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'project.feed',
     'project.api',
+    'storages',
     'corsheaders',
     # 'django_simple_coupons',
     'timezone_field',
@@ -194,6 +195,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media-files') # 'data' is my media folder
 
 
+AWS_ACCESS_KEY_ID = 'AKIAZDPYVJHPXWJCBY7J'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'esr-media'
+AWS_S3_FILE_OVERWRITE = False
+AWS_QUERYSTRING_AUTH = False
+AWS_DEFAULT_ACL = 'public-read'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
