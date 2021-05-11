@@ -6,10 +6,6 @@
 bin/
 lib/
 
-project/feed/models/__pycache__/.*.*
-*.cpython-39.pyc
-
-
 pyvenv.cfg
 static/
 
