@@ -57,6 +57,24 @@ class Restaurant(models.Model):
         (HIGH, '$$$'),
     )
 
+    DINE_IN = 'DINE IN ONLY'
+    DINE_IN_TAKE_AWAY = 'DINE IN & TAKE AWAY'
+    DINE_IN_DELIVERY = 'DINE IN & DELIVERY'
+    TAKE_AWAY = 'TAKE AWAY ONLY'
+    TAKE_AWAY_DELIVERY = 'TAKE AWAY & DELIVERY'
+    DELIVERY = 'DELIVERY ONLY'
+    DINE_IN_TAKE_AWAY_DELIVERY = 'DINE IN & TAKE AWAY & DELIVERY'
+
+    RESTAURANT_TYPE_CHOICES = (
+        (DINE_IN, 'Dine In Only'),
+        (DINE_IN_TAKE_AWAY, 'Dine In & Take Away'),
+        (DINE_IN_DELIVERY, 'Dine In & Delivery'),
+        (TAKE_AWAY, 'Take Away Only'),
+        (TAKE_AWAY_DELIVERY, 'Take Away & Delivery'),
+        (DELIVERY, 'Delivery Only'),
+        (DINE_IN_TAKE_AWAY_DELIVERY, 'Dine In & Take Away & Delivery'),
+    )
+
     price_level = models.CharField(verbose_name='restaurant_price_level', max_length=6, choices=PRICE_LEVEL_CHOICES)
     category = models.ForeignKey(
         Category,
@@ -64,6 +82,11 @@ class Restaurant(models.Model):
         related_name='restaurants',
         null=True,
         blank=True,
+    )
+    restaurant_type = models.CharField(
+        max_length=50, 
+        choices=RESTAURANT_TYPE_CHOICES, 
+        default=DINE_IN_TAKE_AWAY_DELIVERY
     )
 
     country = CountryField(blank_label='(select country)')

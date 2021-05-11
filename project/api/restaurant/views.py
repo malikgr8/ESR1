@@ -22,34 +22,37 @@ from django.db.models import Avg
 
 
 class ListAllRestaurantsView(GenericAPIView):
-    queryset = Offer.objects.all()
-    queryset_restaurant = Restaurant.objects.all()
-    serializer_class = OfferSerializer
-    serializer_class_restaurant = RestaurantSerializer
+    permission_classes = [IsAuthenticated]
 
-    def get(self, requset):
+    def get(self, request):
+        
+        queryset_restaurant = Restaurant.objects.all()
+        serializer_class_restaurant = RestaurantSerializer
+        
         search_string = self.request.query_params.get('search')
         if search_string:
             context = {}
-            offers = self.queryset.filter(
+            offer_query_set = Offer.objects.all()
+            offer_serializer_class = OfferSerializer
+            offers = offer_query_set.filter(
                 Q(name__icontains=search_string) |
                 Q(restaurant__name__icontains=search_string)
             )
             if offers:
-                context['offers'] = self.serializer_class(offers, many=True).data
+                context['offers'] = offer_serializer_class(offers, many=True, context={'request': request}).data
             
-            restaurants = self.queryset_restaurant.filter(
+            restaurants = queryset_restaurant.filter(
                 Q(name__icontains=search_string) |
                 Q(category__name__icontains=search_string) |
                 Q(address__icontains=search_string)
             )
             if restaurants:
-                context['restaurants']= self.serializer_class_restaurant(restaurants, many=True).data
+                context['restaurants']= serializer_class_restaurant(restaurants, many=True).data
             if context:
                 return Response(context)
             return Response('Nothing Found')
         # if no search query str provided returns all restaurants
-        return Response(self.serializer_class_restaurant(self.queryset_restaurant, many=True).data)
+        return Response(serializer_class_restaurant(queryset_restaurant, many=True).data)
         
 
 
@@ -139,6 +142,14 @@ class AllOffers(ListAPIView):
 
     def get_queryset(self):
         return Offer.objects.filter(approval_status=True, is_redeemable=True)
+
+
+class NonFeaturedOffers(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OfferSerializer
+
+    def get_queryset(self):
+        return Offer.objects.filter(approval_status=True, is_redeemable=True, restaurant__is_featured=False)
 
 
 class FeaturedOffers(ListAPIView):

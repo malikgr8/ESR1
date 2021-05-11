@@ -14,10 +14,12 @@ from project.feed.models.user_coupon import UserCoupon
 from project.feed.models.user_offers import UserOffers
 from rest_framework import mixins
 from datetime import datetime
+from datetime import timedelta
 from rest_framework.views import APIView
 from project.api.restaurant.serializers import OfferSerializer
 from project.api.me.serializers import UserCoupnSerializer, UserOfferSerializer
 from project.feed.models.offer import Offer
+import pytz
 
 
 User = get_user_model()
@@ -79,24 +81,44 @@ class CouponApply(mixins.CreateModelMixin, GenericAPIView):
         """
         user = request.user
         coupon_code = request.data.get('coupon_code')
-        coupon = Coupon.objects.get(code=coupon_code)
-        if coupon:
-            user_coupon = UserCoupon(
-                user=user,
-                coupon=coupon,
-                used_at=datetime.now()
-            )
-            user_coupon.save()
-            return Response(
+        offer_id = request.data.get('offer_id')
+        try:
+            offer = Offer.objects.get(pk=offer_id)
+            try:
+                coupon = Coupon.objects.get(code=coupon_code, coupon_offer=offer)
+                already_used_coupon = UserCoupon.objects.filter(user=user, coupon=coupon).order_by('-used_at')
+                if already_used_coupon:
+                    re_usable_time = already_used_coupon[0].used_at + timedelta(hours=UserCoupon.REDEEM_HOURS_LIMIT)
+                    if re_usable_time > datetime.now().replace(tzinfo=pytz.UTC):
+                        return Response(
+                            {
+                                'message': "Coupon can not be redeemable before 24 hours.",
+                                'coupon_applied': False
+                            }
+                        )
+                user_coupon = UserCoupon(
+                    user=user,
+                    coupon=coupon,
+                    used_at=datetime.now()
+                )
+                user_coupon.save()
+                return Response(
+                    {
+                        'message': "Coupon successfully applied.",
+                        'coupon_applied': True
+                    }
+                )
+            except Coupon.DoesNotExist:
+                return Response(
                 {
-                    'message': "Coupon successfully applied.",
-                    'coupon_applied': True
+                    'message': "Invalid Coupon code.",
+                    'coupon_applied': False
                 }
             )
-        else:
+        except Offer.DoesNotExist:
             return Response(
                 {
-                    'message': "Invalid coupon code.",
+                    'message': "Invalid offer.",
                     'coupon_applied': False
                 }
             )
@@ -108,8 +130,8 @@ class UserCouponsView(APIView):
     
     def get(self, request):
         offers = []
-        info = UserCoupon.objects.filter(user=request.user).select_related('coupon')
-        info = UserCoupnSerializer(info, context={'request': request}).data
+        info = UserCoupon.objects.filter(user=request.user)
+        info = UserCoupnSerializer(info, context={'request': request}, many=True).data
         return Response(info)
 
 
@@ -148,7 +170,10 @@ class AddUserFavOfferView(APIView):
                 'code': 200
             })
         except:
-            return Response('invalid offer id.')
+            return Response({
+                'message': 'Invalid offer id.',
+                'code': 422
+            })
 
 class RemoveUserFavOfferView(APIView):
     permission_classes = [IsAuthenticated]
@@ -162,4 +187,7 @@ class RemoveUserFavOfferView(APIView):
                 'code': 200
             })
         except:
-            return Response('invalid offer id.')
+            return Response({
+                'message': 'Invalid offer id.',
+                'code': 422
+            })

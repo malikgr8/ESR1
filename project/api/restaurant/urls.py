@@ -6,7 +6,7 @@ from project.api.restaurant.views import (
     TopRatedRestaurantsView, TopRated4RestaurantsView,
     ListCategoryRestaurantsView, RestaurantImageUploadView,
     OfferByRestaurant, AllOffers, OfferById, BumperOffers, AllTopOffers,
-    ListAllRestaurantsView, FeaturedOffers
+    ListAllRestaurantsView, FeaturedOffers, NonFeaturedOffers
 )
 
 from project.api.restaurant import views
@@ -17,6 +17,7 @@ urlpatterns = [
     # restaurant related routes
     path('<int:pk>/', RestaurantGetUpdateDeleteView.as_view(), name='get_update_delete_restaurant'),
     path('', ListAllRestaurantsView.as_view(), name='all'),
+   # path('all', ListAllRestaurantsView.as_view(), name='all_restaurants'),
     path('<int:restaurant_id>/offers', OfferByRestaurant.as_view(), name='offer_by_restaurant'),
     path('?search=<str:search_string>', ListAllRestaurantsView.as_view(), name='search_restaurant_offers'),
     # top avg rating of reviews based restraurants
@@ -30,12 +31,9 @@ urlpatterns = [
     path('offers', AllOffers.as_view(), name='all_offers'),
     path('offers/bumper', BumperOffers.as_view(), name='all_bumper_offers'),
     path('offers/featured', FeaturedOffers.as_view(), name='featured_offers'),
+    path('offers/nonfeatured', NonFeaturedOffers.as_view(), name='non_featured_offers'),
     
-
     
-   
-
-
     path('top/offers', AllTopOffers.as_view(), name='top_rated_offers'),
     path('top4', TopRated4RestaurantsView.as_view(), name='top_rated_4_restaurants'),
     path('new/', NewRestaurantView.as_view(), name='new_restaurant'),

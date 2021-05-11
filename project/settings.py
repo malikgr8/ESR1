@@ -6,7 +6,6 @@ from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -22,6 +21,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1:8000',
     'phoenix.propulsion-learn.ch',
+    '3.129.88.54'
 ]
 
 # Taking email settings from env file
@@ -112,8 +112,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'esr',
-        'USER': 'ESR',
+        'NAME': 'esrdb',
+        'USER': 'esr',
         'PASSWORD': '2804malik',
         'HOST': '127.0.0.1',
         'PORT': '5432',
@@ -189,11 +189,16 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static-files')
+STATIC_BASE_DIR = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(STATIC_BASE_DIR, "collected_static/")
 
+#MEDIA_BASE = os.path.expanduser("~")
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media-files') # 'data' is my media folder
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
+STATICFILES_DIRS = [
+    "/home/ubuntu/static",
+]
 
 AWS_ACCESS_KEY_ID = 'AKIAZDPYVJHPXWJCBY7J'
 AWS_SECRET_ACCESS_KEY = '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'
@@ -202,6 +207,12 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
 AWS_DEFAULT_ACL = 'public-read'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STATIC_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

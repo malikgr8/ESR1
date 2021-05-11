@@ -18,6 +18,8 @@ class ReviewSerializer(serializers.ModelSerializer):
     restaurant_name = serializers.SerializerMethodField()
     offer_name = serializers.SerializerMethodField()
     review_images = serializers.SerializerMethodField()
+    restaurant_logo = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
     
     class Meta:
         model = Review
@@ -34,7 +36,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             'updated_at',
             'rating_overall',
             'tags',
-            'review_images'
+            'review_images',
+            'restaurant_logo'
         ]
 
     def create(self, validated_data):
@@ -93,11 +96,17 @@ class ReviewSerializer(serializers.ModelSerializer):
     def get_user(self, review):
         return "{} {}".format(review.user.first_name, review.user.last_name) 
     
+    def get_tags(self, review):
+        return review.tags.split(',')
+
     def get_offer_name(self, review):
         return review.offer.name
     
     def get_restaurant_name(self, review):
         return review.restaurant.name
+    
+    def get_restaurant_logo(self, review):
+        return review.restaurant.logo_image.url
     
     def get_review_images(self, review):
         reveiw_images = []

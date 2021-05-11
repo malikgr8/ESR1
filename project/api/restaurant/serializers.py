@@ -19,8 +19,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
         fields = ['id', 'name', 'country', 'address', 'city', 'zip_code', 'lat', 'long', 'website',
-            'phone_number', 'rating', 'email', 'opening_hours', 'price_level', 'category', 'reviews',
-            'image', 'logo_image', 'cover_image', 'menu_images', 'is_featured', 'reviews_count']
+            'phone_number', 'rating', 'email', 'opening_hours', 'price_level', 'category', 'restaurant_type',
+            'reviews', 'image', 'logo_image', 'cover_image', 'menu_images', 'is_featured', 'reviews_count']
         read_only_fields = ['id', 'reviews',]
 
     def get_category(self, restaurant):
@@ -57,7 +57,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ['id', 'name', 'discounted_price', 'rating', 'original_price', 'restaurant_id', 'image_url',
+        fields = ['id', 'name', 'description', 'discounted_price', 'rating', 'original_price', 'restaurant_id', 'image_url',
             'reviews_count', 'valid_from', 'valid_till', 'restaurant_name', 'restaurant_category', 'is_bumper',
             'is_redeemable', 'cover_image', 'can_review', 'lat', 'long'
         ]

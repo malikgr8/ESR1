@@ -21,6 +21,7 @@ class UserOffers(models.Model):
     class Meta:
         verbose_name = 'UserOffer'
         verbose_name_plural = 'UserOffers'
+        unique_together = [('user', 'offer')]
 
     def __str__(self):
         return self.user.username
