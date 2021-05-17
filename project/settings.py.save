@@ -13,16 +13,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '&ylsny@gm0rb^4wg+_g8tx-k49v682z)myyj^tlltq8v0$8n!#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    #"*",
+    "*",
     '0.0.0.0',
     'localhost',
     '127.0.0.1:8000',
-    #'phoenix.propulsion-learn.ch',
-    '3.129.88.54',
-    '18.188.245.210'
+    'phoenix.propulsion-learn.ch',
+    '3.129.88.54'
 ]
 
 # Taking email settings from env file
@@ -113,9 +112,9 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'myproject',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'password',
+        'NAME': 'esrdb',
+        'USER': 'esr',
+        'PASSWORD': '2804malik',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -216,4 +215,4 @@ STATIC_FINDERS = [
 
 
 # Activate Django-Heroku.
-#django_heroku.settings(locals())
+django_heroku.settings(locals())
