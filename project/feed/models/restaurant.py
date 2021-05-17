@@ -13,7 +13,7 @@ def image_upload_path(instance, filename):
     This function returns path of image to be stored
     """
 
-    return f'images/restaurants/{instance.name}/restaurant_image/{datetime.datetime.utcnow()}/'
+    return f'images/restaurants/{instance.name}/restaurant_image/{datetime.datetime.utcnow()}'
 
 
 def logo_upload_path(instance, filename):
@@ -21,7 +21,7 @@ def logo_upload_path(instance, filename):
     This function returns path of image to be stored
     """
 
-    return f'images/restaurants/{instance.name}/restaurant_logo/{datetime.datetime.utcnow()}/'
+    return f'images/restaurants/{instance.name}/restaurant_logo/{datetime.datetime.utcnow()}'
 
 
 def cover_upload_path(instance, filename):
@@ -29,7 +29,7 @@ def cover_upload_path(instance, filename):
     This function returns path of image to be stored
     """
 
-    return f'images/restaurants/{instance.name}/restaurant_cover/{datetime.datetime.utcnow()}/'
+    return f'images/restaurants/{instance.name}/restaurant_cover/{datetime.datetime.utcnow()}'
 
 
 class Restaurant(models.Model):
