@@ -19,7 +19,7 @@ class  TopReviewsView(GenericAPIView):
     queryset = Review.objects.all()
 
     def get(self, request):
-        serializer = self.get_serializer(self.queryset.filter(is_active=True).order_by('-rating_overall'), many=True)
+        serializer = self.get_serializer(self.queryset.filter().order_by('-rating_overall'), many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
@@ -32,11 +32,11 @@ class SearchTagsView(GenericAPIView):
             restaurant = Restaurant.objects.get(pk=request.data.get('restaurant_id'))
             if request.data.get('tag'):
                 serializer = self.get_serializer(Tag.objects.filter(
-                    name__contains=request.data.get('tag'), restaurant=restaurant, is_active=True),
+                    name__contains=request.data.get('tag'), restaurant=restaurant),
                     many=True
                 )
             else:
-                 serializer = self.get_serializer(Tag.objects.filter(restaurant=restaurant, is_active=True), many=True)
+                 serializer = self.get_serializer(Tag.objects.filter(restaurant=restaurant), many=True)
             if serializer.data:
                 return Response(serializer.data, status.HTTP_200_OK)
             else:
@@ -52,7 +52,7 @@ class GetReviewByRestaurantView(GenericAPIView):
 
     def get(self, request, **kwargs):
         restaurant_id = kwargs.get('restaurant_id')
-        review = self.queryset.filter(restaurant=restaurant_id, is_active=True).select_related('restaurant', 'offer', 'user')
+        review = self.queryset.filter(restaurant=restaurant_id).select_related('restaurant', 'offer', 'user')
         serializer = self.get_serializer(review, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
@@ -82,7 +82,7 @@ class AddReviewImage(GenericAPIView):
     serializer_class = ReviewSerializer
 
     def post(self, request):
-        review = Review.objects.get(pk=int(request.data.get('review_id')), is_active=True)
+        review = Review.objects.get(pk=int(request.data.get('review_id')))
         review.image = request.data.get('image')
         review.save()
         return Response(self.serializer_class(review).data, status.HTTP_200_OK)
@@ -112,7 +112,7 @@ class RestaurantReviewsView(GetObjectMixin, ListAPIView):
 
     def filter_queryset(self, queryset):
         restaurant = self.get_object_by_model(Restaurant, pk=self.kwargs.get('pk'))
-        return queryset.filter(restaurant=restaurant, is_active=True).order_by('-created_at')
+        return queryset.filter(restaurant=restaurant).order_by('-created_at')
 
 
 class UserReviewsView(ListAPIView):
@@ -120,7 +120,7 @@ class UserReviewsView(ListAPIView):
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
-        return Review.objects.filter(user__username=self.request.user.username, is_active=True)
+        return Review.objects.filter(user__username=self.request.user.username)
 
 
 class ReviewGetUpdateDeleteView(GenericAPIView):
@@ -198,7 +198,7 @@ class PopularReviewsView(GenericAPIView):
         reviews_like = ReviewLike.objects.values('review__id').annotate(count=Count('review_id')).order_by('-count')
         reviews = []
         for obj in reviews_like:
-            reviews.append(Review.objects.get(pk=obj.get('review__id'), is_active=True))
+            reviews.append(Review.objects.get(pk=obj.get('review__id')))
         return Response(ReviewSerializer(reviews, many=True).data, status.HTTP_200_OK)
 
 
@@ -208,7 +208,7 @@ class LikedReviewsView(GetObjectMixin, APIView):
     ]
 
     def get(self, request):
-        reviews = Review.objects.filter(likes__user=request.user, is_active=True)
+        reviews = Review.objects.filter(likes__user=request.user)
         return Response(ReviewSerializer(reviews, many=True).data, status.HTTP_200_OK)
 
 
@@ -218,5 +218,5 @@ class CommentedReviewsView(GetObjectMixin, APIView):
     ]
 
     def get(self, request):
-        reviews = Review.objects.filter(comments__user=request.user, is_active=True)
+        reviews = Review.objects.filter(comments__user=request.user)
         return Response(ReviewSerializer(reviews, many=True).data, status.HTTP_200_OK)
