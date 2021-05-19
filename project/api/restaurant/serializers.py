@@ -81,7 +81,7 @@ class OfferSerializer(serializers.ModelSerializer):
         return offer.restaurant.category.name
     
     def get_reviews_count(self, offer):
-        return Review.objects.filter(offer=offer.id).count()
+        return Review.objects.filter(offer=offer.id, is_active=True).count()
     
     def get_rating(self, offer):
         return Review.objects.filter(offer=offer.id).aggregate(ave_rating=Avg('rating_overall'))
