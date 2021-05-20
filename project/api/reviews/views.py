@@ -198,7 +198,9 @@ class PopularReviewsView(GenericAPIView):
         reviews_like = ReviewLike.objects.values('review__id').annotate(count=Count('review_id')).order_by('-count')
         reviews = []
         for obj in reviews_like:
-            reviews.append(Review.objects.get(pk=obj.get('review__id')))
+            review = Review.objects.get(pk=obj.get('review__id'))
+            if review.is_active:
+                reviews.append(review)
         return Response(ReviewSerializer(reviews, many=True).data, status.HTTP_200_OK)
 
 
