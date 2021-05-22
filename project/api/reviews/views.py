@@ -14,7 +14,7 @@ from project.feed.models.tag import Tag
 from django.db.models import Count
 
 
-class  TopReviewsView(GenericAPIView):
+class TopReviewsView(GenericAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
 
@@ -86,7 +86,6 @@ class AddReviewImage(GenericAPIView):
         review.image = request.data.get('image')
         review.save()
         return Response(self.serializer_class(review).data, status.HTTP_200_OK)
-        
         
 
 class NewReviewView(GetObjectMixin, GenericAPIView):
@@ -188,6 +187,7 @@ class LikeUnlikeReviewView(GetObjectMixin, APIView):
                     'message': 'Invalid review id'
                 }
             )
+
 
 class PopularReviewsView(GenericAPIView):
     permission_classes = [
