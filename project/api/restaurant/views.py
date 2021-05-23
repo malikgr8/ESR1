@@ -26,7 +26,7 @@ class ListAllRestaurantsView(GenericAPIView):
 
     def get(self, request):
         
-        queryset_restaurant = Restaurant.objects.filter(is_featured=False).order_by('-created')
+        queryset_restaurant = Restaurant.objects.all()
         serializer_class_restaurant = RestaurantSerializer
         
         search_string = self.request.query_params.get('search')
@@ -140,7 +140,9 @@ class AllOffers(ListAPIView):
     serializer_class = OfferSerializer
 
     def get_queryset(self):
-        return Offer.objects.filter(approval_status=True, is_redeemable=True)
+        return Offer.objects.filter(approval_status=True,
+                                    is_redeemable=True,
+                                    restaurant__is_featured=False).order_by('restaurant__created')
 
 
 class NonFeaturedOffers(ListAPIView):
