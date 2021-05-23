@@ -14,12 +14,12 @@ from project.feed.models.tag import Tag
 from django.db.models import Count
 
 
-class  TopReviewsView(GenericAPIView):
+class TopReviewsView(GenericAPIView):
     serializer_class = ReviewSerializer
     queryset = Review.objects.all()
 
     def get(self, request):
-        serializer = self.get_serializer(self.queryset.order_by('-rating_overall'), many=True)
+        serializer = self.get_serializer(self.queryset.filter().order_by('-rating_overall'), many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
@@ -86,7 +86,6 @@ class AddReviewImage(GenericAPIView):
         review.image = request.data.get('image')
         review.save()
         return Response(self.serializer_class(review).data, status.HTTP_200_OK)
-        
         
 
 class NewReviewView(GetObjectMixin, GenericAPIView):
@@ -189,6 +188,7 @@ class LikeUnlikeReviewView(GetObjectMixin, APIView):
                 }
             )
 
+
 class PopularReviewsView(GenericAPIView):
     permission_classes = [
         IsAuthenticated,
@@ -198,7 +198,9 @@ class PopularReviewsView(GenericAPIView):
         reviews_like = ReviewLike.objects.values('review__id').annotate(count=Count('review_id')).order_by('-count')
         reviews = []
         for obj in reviews_like:
-            reviews.append(Review.objects.get(pk=obj.get('review__id')))
+            review = Review.objects.get(pk=obj.get('review__id'))
+            if review.is_active:
+                reviews.append(review)
         return Response(ReviewSerializer(reviews, many=True).data, status.HTTP_200_OK)
 
 

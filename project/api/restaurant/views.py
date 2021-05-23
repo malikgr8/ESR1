@@ -32,7 +32,7 @@ class ListAllRestaurantsView(GenericAPIView):
         search_string = self.request.query_params.get('search')
         if search_string:
             context = {}
-            offer_query_set = Offer.objects.all()
+            offer_query_set = Offer.objects.all().order_by('created')
             offer_serializer_class = OfferSerializer
             offers = offer_query_set.filter(
                 Q(name__icontains=search_string) |
@@ -47,13 +47,12 @@ class ListAllRestaurantsView(GenericAPIView):
                 Q(address__icontains=search_string)
             )
             if restaurants:
-                context['restaurants']= serializer_class_restaurant(restaurants, many=True).data
+                context['restaurants'] = serializer_class_restaurant(restaurants, many=True).data
             if context:
                 return Response(context)
             return Response('Nothing Found')
         # if no search query str provided returns all restaurants
         return Response(serializer_class_restaurant(queryset_restaurant, many=True).data)
-        
 
 
 class TopRatedRestaurantsView(GenericAPIView):
@@ -141,7 +140,9 @@ class AllOffers(ListAPIView):
     serializer_class = OfferSerializer
 
     def get_queryset(self):
-        return Offer.objects.filter(approval_status=True, is_redeemable=True)
+        return Offer.objects.filter(approval_status=True,
+                                    is_redeemable=True,
+                                    restaurant__is_featured=False).order_by('restaurant__created')
 
 
 class NonFeaturedOffers(ListAPIView):
@@ -157,13 +158,15 @@ class FeaturedOffers(ListAPIView):
     serializer_class = OfferSerializer
 
     def get_queryset(self):
-        return Offer.objects.filter(approval_status=True, is_redeemable=True, restaurant__is_featured=True)
+        return Offer.objects.filter(approval_status=True,
+                                    is_redeemable=True, restaurant__is_featured=True).order_by('created_at')
 
 
 class AllTopOffers(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OfferSerializer
     queryset = Review.objects.all().select_related('offer').order_by('offer', 'rating_overall').distinct('offer')
+
     def get(self, request):
         offer_list = []
         for review in self.get_queryset():
@@ -189,11 +192,11 @@ class OfferById(GenericAPIView):
         serializer = self.get_serializer(offer, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
+
 class OfferByRestaurant(GenericAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
-    
 
     def get(self, request, **kwargs):
         offer = self.queryset.filter(restaurant_id=kwargs.get('restaurant_id'), approval_status=True)
